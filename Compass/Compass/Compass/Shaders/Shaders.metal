@@ -39,6 +39,7 @@ vertex float4 vertex_main(float4 position [[ attribute(0) ]] [[ stage_in ]],
                           uint vertexID [[ vertex_id ]]) {
     float4 pos = position;
     pos.y += timer;
+    pos.w = 1;
     return pos;
 }
 
