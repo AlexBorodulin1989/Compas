@@ -9,16 +9,16 @@ import MathLibrary
 import ModelLoader
 import RuntimeError
 
-class ArrowModel {
+class ArrowModel: Model {
     let vertexBuffer: MTLBuffer
     let indexBuffer: MTLBuffer
     
     private let vertices: [float3]
-    private let indices: [UInt16]
+    let indices: [UInt16]
     
     static let name = "direction_arrow"
     
-    static var vertexDescriptor: MTLVertexDescriptor {
+    var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float3
         vertexDescriptor.attributes[0].offset = 0
