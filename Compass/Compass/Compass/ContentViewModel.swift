@@ -13,7 +13,7 @@ class ContentViewModel: ObservableObject {
     
     init() {
         Task {
-            let filename = "african_head"
+            let filename = "direction_arrow"
             
             guard let file = Bundle.main.url(forResource: filename, withExtension: "obj")
             else {
