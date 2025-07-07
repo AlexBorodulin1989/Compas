@@ -40,10 +40,6 @@ vertex float4 vertex_main(float4 position [[ attribute(0) ]] [[ stage_in ]],
     float4 pos = position;
     pos.y += timer;
     
-    if (pos.z < 0) {
-        pos.z = 0.14;
-    }
-    
     pos.w = 1;
     return pos;
 }
