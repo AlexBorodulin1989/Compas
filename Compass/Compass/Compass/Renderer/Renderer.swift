@@ -119,7 +119,7 @@ extension Renderer: MTKViewDelegate {
                                       index: 0)
         
         renderEncoder.drawIndexedPrimitives(type: .triangle,
-                                            indexCount: model.indices.count,
+                                            indexCount: model.indicesAmount,
                                             indexType: .uint16,
                                             indexBuffer: model.indexBuffer,
                                             indexBufferOffset: 0)

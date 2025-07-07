@@ -39,7 +39,7 @@ public class ModelLoader {
                     for i in 1...3 {
                         let values = separateValues[i].split(separator: "/")
                         if let indexVal = values.first, let index = UInt16(indexVal) {
-                            _indices.append(index)
+                            _indices.append(index - 1)
                         }
                     }
                 }

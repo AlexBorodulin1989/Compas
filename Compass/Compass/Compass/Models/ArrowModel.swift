@@ -6,17 +6,14 @@
 //
 import MetalKit
 import MathLibrary
-import ModelLoader
-import RuntimeError
 
 class ArrowModel: Model {
-    let vertexBuffer: MTLBuffer
-    let indexBuffer: MTLBuffer
+    var vertexBuffer: MTLBuffer!
+    var indexBuffer: MTLBuffer!
     
-    private let vertices: [float3]
-    let indices: [UInt16]
+    let name = "direction_arrow"
     
-    static let name = "direction_arrow"
+    var indicesAmount = 0
     
     var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
@@ -31,29 +28,6 @@ class ArrowModel: Model {
     }
     
     init(device: MTLDevice, scale: Float = 1) async throws {
-        
-        guard let file = Bundle.main.url(forResource: ArrowModel.name, withExtension: "obj")
-        else {
-            fatalError("Could not find \(ArrowModel.name) in main bundle.")
-        }
-        
-        let modelLoader = await ModelLoader(fileUrl: file)
-        
-        vertices = modelLoader.vertices.map { $0 * scale }
-        indices = modelLoader.indices
-        
-        guard let vertexBuffer = device.makeBuffer(bytes: &vertices,
-                                                   length: MemoryLayout<Float>.stride * vertices.count)
-        else {
-            throw RuntimeError("Cannot create vertex buffer in file \(#file)")
-        }
-        self.vertexBuffer = vertexBuffer
-        
-        guard let indexBuffer = device.makeBuffer(bytes: &indices,
-                                                  length: MemoryLayout<UInt16>.stride * indices.count)
-        else {
-            throw RuntimeError("Cannot create index buffer buffer in file \(#file)")
-        }
-        self.indexBuffer = indexBuffer
+        try await initialize(device: device, scale: scale)
     }
 }
