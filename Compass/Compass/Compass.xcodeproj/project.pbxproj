@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36AFD92E1BF3FE004F73E2 /* ModelLoader */; };
+		9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36B01F2E1C0432004F73E2 /* RuntimeError */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */,
 				9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +73,7 @@
 			name = Compass;
 			packageProductDependencies = (
 				9D36AFD92E1BF3FE004F73E2 /* ModelLoader */,
+				9D36B01F2E1C0432004F73E2 /* RuntimeError */,
 			);
 			productName = Compass;
 			productReference = 9D36AFC72E1BF396004F73E2 /* Compass.app */;
@@ -102,6 +105,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				9D36AFD82E1BF3FE004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/ModelLoader" */,
+				9D36B01E2E1C0432004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/RuntimeError" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D36AFC82E1BF396004F73E2 /* Products */;
@@ -339,12 +343,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/ModelLoader;
 		};
+		9D36B01E2E1C0432004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/RuntimeError" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/RuntimeError;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		9D36AFD92E1BF3FE004F73E2 /* ModelLoader */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ModelLoader;
+		};
+		9D36B01F2E1C0432004F73E2 /* RuntimeError */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RuntimeError;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
