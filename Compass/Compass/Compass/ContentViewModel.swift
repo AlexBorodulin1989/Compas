@@ -13,11 +13,9 @@ class ContentViewModel: ObservableObject {
     
     init() {
         Task {
-            let filename = "direction_arrow"
-            
-            guard let file = Bundle.main.url(forResource: filename, withExtension: "obj")
+            guard let file = Bundle.main.url(forResource: ArrowModel.name, withExtension: "obj")
             else {
-                fatalError("Could not find \(filename) in main bundle.")
+                fatalError("Could not find \(ArrowModel.name) in main bundle.")
             }
             
             let modelLoader = await ModelLoader(fileUrl: file)
