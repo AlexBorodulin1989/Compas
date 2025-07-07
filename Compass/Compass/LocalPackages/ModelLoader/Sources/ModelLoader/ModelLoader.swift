@@ -9,13 +9,14 @@ import Foundation
 import MathLibrary
 
 public class ModelLoader {
-    // Private properties
-    private var _vertices: [float3] = .init()
-    private var _indices: [UInt16] = .init()
-    
     // Public properties
     public var vertices: [float3] { _vertices }
     public var indices: [UInt16] { _indices }
+    
+    // Private properties
+    private var _vertices: [float3] = .init()
+    private var _indices: [UInt16] = .init()
+    private var maxAbsVertexPosValue: Float = 0
     
     public init(fileUrl: URL) async {
         do {
@@ -31,6 +32,8 @@ public class ModelLoader {
                        let z = Float(separateValues[3]) {
                         let vertex = float3(x, y, z)
                         _vertices.append(vertex)
+                        
+                        maxAbsVertexPosValue = max(max(max(abs(x), abs(y)), abs(z)), maxAbsVertexPosValue)
                     }
                 } else if separateValues.first == "f" {
                     for i in 1...3 {
@@ -41,8 +44,19 @@ public class ModelLoader {
                     }
                 }
             }
+            
+            normalizeVertexPos()
         } catch {
             fatalError(error.localizedDescription)
         }
+    }
+}
+
+// Private functions
+extension ModelLoader {
+    private func normalizeVertexPos() {
+        let invMaxAbsVertexPosValue = 1 / maxAbsVertexPosValue
+        
+        _vertices = _vertices.map { $0 * invMaxAbsVertexPosValue }
     }
 }
