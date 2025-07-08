@@ -62,5 +62,5 @@ vertex FragmentInput vertex_main(VertexInput vert [[stage_in]],
 }
 
 fragment float4 fragment_main(FragmentInput in [[stage_in]]) {
-    return float4(0, 0, 1, 1) * (in.diffKoef + 0.5);
+    return float4(float3(0, 0, 1) * (in.diffKoef + 0.5), 1);
 }

@@ -6,10 +6,17 @@
 //
 
 import SwiftUI
+import MijickCamera
 
 struct ContentView: View {
     var body: some View {
-        MetalView()
+        ZStack {
+            MCamera()
+                .startSession()
+            MetalView()
+            
+        }
+        
     }
 }
 

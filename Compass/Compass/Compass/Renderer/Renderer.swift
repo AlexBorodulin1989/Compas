@@ -88,6 +88,13 @@ class Renderer: NSObject {
         pipelineDescriptor.colorAttachments[0].pixelFormat = metalView.colorPixelFormat
         pipelineDescriptor.vertexDescriptor = model.vertexDescriptor
         pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+        
+//        pipelineDescriptor.isAlphaToCoverageEnabled = true
+//        pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+//        pipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+//        pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+//        pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        
         do {
             pipelineState =
             try device.makeRenderPipelineState(
@@ -109,10 +116,12 @@ class Renderer: NSObject {
             red: 1.0,
             green: 1.0,
             blue: 0.8,
-            alpha: 1.0)
+            alpha: 0.2)
         metalView.delegate = self
         
         metalView.depthStencilPixelFormat = .depth32Float
+        
+        metalView.isOpaque = false
         
         
         motionManager.startDeviceMotionUpdates(to: motionManagerQueue) { [weak self] data, error in
@@ -135,6 +144,8 @@ class Renderer: NSObject {
                         [0, 0, 0, 1]
                     )
                 }
+                
+                print("pitch = \(trackMotion.pitch), yaw = \(trackMotion.yaw), roll = \(trackMotion.roll)")
             }
         }
     }
@@ -163,13 +174,22 @@ extension Renderer: MTKViewDelegate {
     func draw(in view: MTKView) {
         guard
             let commandBuffer = commandQueue.makeCommandBuffer(),
-            let descriptor = view.currentRenderPassDescriptor,
-            let renderEncoder =
-                commandBuffer.makeRenderCommandEncoder(
-                    descriptor: descriptor) else {
+            let descriptor = view.currentRenderPassDescriptor
+        else {
             return
         }
         
+        descriptor.colorAttachments[0].loadAction = .clear
+        descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
+        
+        guard let renderEncoder =
+                commandBuffer.makeRenderCommandEncoder(
+                    descriptor: descriptor)
+        else {
+            return
+        }
+        
+        renderEncoder.setCullMode(.none)
         renderEncoder.setDepthStencilState(depthState)
         renderEncoder.setRenderPipelineState(pipelineState)
         
