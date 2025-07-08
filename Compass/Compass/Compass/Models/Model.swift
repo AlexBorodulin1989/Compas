@@ -31,7 +31,7 @@ extension Model {
         
         let modelLoader = await ModelLoader(fileUrl: file)
         
-        var vertices = modelLoader.vertices.map { float4($0, 1) * scale }
+        var vertices = modelLoader.vertices.map { float4($0 * scale, 1) }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count

@@ -45,7 +45,7 @@ class ArrowModel: Model {
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
         let rotate = rotateZ * rotateX
         
-        var vertices = modelLoader.vertices.map { rotate * float4($0, 1) * scale }
+        var vertices = modelLoader.vertices.map { rotate * float4($0 * scale, 1) }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count

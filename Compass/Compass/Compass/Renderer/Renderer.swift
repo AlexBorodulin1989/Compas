@@ -139,6 +139,8 @@ extension Renderer: MTKViewDelegate {
         
         var projMatrix = camera.projMatrix
         
+        var matrix = projMatrix * float4x4(translation: .init(0, 0, 10))
+        
         renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<Float>.stride,
                                      index: 10)
