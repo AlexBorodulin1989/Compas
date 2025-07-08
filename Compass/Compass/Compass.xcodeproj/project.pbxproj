@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36AFD92E1BF3FE004F73E2 /* ModelLoader */; };
 		9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36B01F2E1C0432004F73E2 /* RuntimeError */; };
-		9DD21AD32E1CE09900DA3501 /* Camera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21AD22E1CE09900DA3501 /* Camera */; };
+		9DD21B652E1D1F7600DA3501 /* MetalCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21B642E1D1F7600DA3501 /* MetalCamera */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +30,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */,
-				9DD21AD32E1CE09900DA3501 /* Camera in Frameworks */,
+				9DD21B652E1D1F7600DA3501 /* MetalCamera in Frameworks */,
 				9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,7 +76,7 @@
 			packageProductDependencies = (
 				9D36AFD92E1BF3FE004F73E2 /* ModelLoader */,
 				9D36B01F2E1C0432004F73E2 /* RuntimeError */,
-				9DD21AD22E1CE09900DA3501 /* Camera */,
+				9DD21B642E1D1F7600DA3501 /* MetalCamera */,
 			);
 			productName = Compass;
 			productReference = 9D36AFC72E1BF396004F73E2 /* Compass.app */;
@@ -109,7 +109,7 @@
 			packageReferences = (
 				9D36AFD82E1BF3FE004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/ModelLoader" */,
 				9D36B01E2E1C0432004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/RuntimeError" */,
-				9DD21AD12E1CE09900DA3501 /* XCLocalSwiftPackageReference "LocalPackages/Camera" */,
+				9DD21B632E1D1F7600DA3501 /* XCLocalSwiftPackageReference "LocalPackages/MetalCamera" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D36AFC82E1BF396004F73E2 /* Products */;
@@ -355,9 +355,9 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/RuntimeError;
 		};
-		9DD21AD12E1CE09900DA3501 /* XCLocalSwiftPackageReference "LocalPackages/Camera" */ = {
+		9DD21B632E1D1F7600DA3501 /* XCLocalSwiftPackageReference "LocalPackages/MetalCamera" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = LocalPackages/Camera;
+			relativePath = LocalPackages/MetalCamera;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -370,9 +370,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = RuntimeError;
 		};
-		9DD21AD22E1CE09900DA3501 /* Camera */ = {
+		9DD21B642E1D1F7600DA3501 /* MetalCamera */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Camera;
+			productName = MetalCamera;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

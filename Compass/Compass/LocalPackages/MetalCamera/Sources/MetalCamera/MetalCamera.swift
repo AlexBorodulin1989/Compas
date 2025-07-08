@@ -2,7 +2,7 @@ import simd
 import CoreFoundation
 import MathLibrary
 
-public class Camera {
+public class MetalCamera {
     private let far: Float = 1
     private let near: Float = 0.1
     

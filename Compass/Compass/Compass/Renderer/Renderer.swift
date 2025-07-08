@@ -31,7 +31,7 @@
 /// THE SOFTWARE.
 
 import MetalKit
-import Camera
+import MetalCamera
 import CoreMotion
 
 // swiftlint:disable implicitly_unwrapped_optional
@@ -46,7 +46,7 @@ class Renderer: NSObject {
     private let far: Double = 2
     private let near: Double = 1
     
-    var camera: Camera
+    var camera: MetalCamera
     
     var rotation: Float = 0
     
