@@ -31,13 +31,13 @@ extension Model {
         
         let modelLoader = await ModelLoader(fileUrl: file)
         
-        var vertices = modelLoader.vertices.map { $0 * scale }
+        var vertices = modelLoader.vertices.map { float4($0, 1) * scale }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count
         
         guard let vertexBuffer = device.makeBuffer(bytes: &vertices,
-                                                   length: MemoryLayout<float3>.stride * vertices.count)
+                                                   length: MemoryLayout<float4>.stride * vertices.count)
         else {
             throw RuntimeError("Cannot create vertex buffer in file \(#file)")
         }

@@ -24,7 +24,7 @@ class HeadModel: Model {
         vertexDescriptor.attributes[0].offset = 0
         vertexDescriptor.attributes[0].bufferIndex = 0
         
-        let stride = MemoryLayout<float3>.stride
+        let stride = MemoryLayout<float4>.stride
         vertexDescriptor.layouts[0].stride = stride
         
         return vertexDescriptor
