@@ -42,7 +42,7 @@ struct MetalView: View {
             MetalViewRepresentable(renderer: renderer,
                                    metalView: $metalView)
             .task {
-                if let model = try? await ArrowModel(device: GPUDevice.instance.mtlDevice) {
+                if let model = try? await ArrowModel(device: GPUDevice.instance.mtlDevice, scale: 0.1) {
                     renderer = Renderer(metalView: metalView,
                                         device: GPUDevice.instance.mtlDevice,
                                         model: model)

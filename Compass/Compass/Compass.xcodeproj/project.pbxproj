@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36AFD92E1BF3FE004F73E2 /* ModelLoader */; };
 		9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36B01F2E1C0432004F73E2 /* RuntimeError */; };
+		9DD21AD32E1CE09900DA3501 /* Camera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21AD22E1CE09900DA3501 /* Camera */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */,
+				9DD21AD32E1CE09900DA3501 /* Camera in Frameworks */,
 				9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				9D36AFD92E1BF3FE004F73E2 /* ModelLoader */,
 				9D36B01F2E1C0432004F73E2 /* RuntimeError */,
+				9DD21AD22E1CE09900DA3501 /* Camera */,
 			);
 			productName = Compass;
 			productReference = 9D36AFC72E1BF396004F73E2 /* Compass.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				9D36AFD82E1BF3FE004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/ModelLoader" */,
 				9D36B01E2E1C0432004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/RuntimeError" */,
+				9DD21AD12E1CE09900DA3501 /* XCLocalSwiftPackageReference "LocalPackages/Camera" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D36AFC82E1BF396004F73E2 /* Products */;
@@ -197,6 +201,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -253,6 +258,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -281,6 +287,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.trilla.mapkit.Compass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -310,6 +317,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.trilla.mapkit.Compass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -347,6 +355,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/RuntimeError;
 		};
+		9DD21AD12E1CE09900DA3501 /* XCLocalSwiftPackageReference "LocalPackages/Camera" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/Camera;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -357,6 +369,10 @@
 		9D36B01F2E1C0432004F73E2 /* RuntimeError */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RuntimeError;
+		};
+		9DD21AD22E1CE09900DA3501 /* Camera */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Camera;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

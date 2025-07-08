@@ -33,14 +33,10 @@
 #include <metal_stdlib>
 using namespace metal;
 
-
 vertex float4 vertex_main(float4 position [[ attribute(0) ]] [[ stage_in ]],
-                          constant float &timer [[ buffer(11) ]],
+                          constant float &projection [[ buffer(10) ]],
                           uint vertexID [[ vertex_id ]]) {
-    float4 pos = position;
-    pos.y += timer;
-    
-    pos.w = 1;
+    float4 pos = projection * position;
     return pos;
 }
 

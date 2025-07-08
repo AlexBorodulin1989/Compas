@@ -31,6 +31,7 @@
 /// THE SOFTWARE.
 
 import MetalKit
+import Camera
 
 // swiftlint:disable implicitly_unwrapped_optional
 
@@ -38,9 +39,13 @@ class Renderer: NSObject {
     let model: Model
     let commandQueue: MTLCommandQueue!
     let library: MTLLibrary
-    var pipelineState: MTLRenderPipelineState!
+    var pipelineState: MTLRenderPipelineState
+    private var depthState: MTLDepthStencilState!
     
-    var timer: Float = 0
+    private let far: Double = 2
+    private let near: Double = 1
+    
+    var camera: Camera = .init()
     
     init(metalView: MTKView, device: MTLDevice, model: Model) {
         self.model = model
@@ -68,6 +73,7 @@ class Renderer: NSObject {
         pipelineDescriptor.fragmentFunction = fragmentFunction
         pipelineDescriptor.colorAttachments[0].pixelFormat = metalView.colorPixelFormat
         pipelineDescriptor.vertexDescriptor = model.vertexDescriptor
+        pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
         do {
             pipelineState =
             try device.makeRenderPipelineState(
@@ -77,12 +83,31 @@ class Renderer: NSObject {
         }
         
         super.init()
+        
+        guard
+            let depthState = createDepthState(device: device)
+        else {
+            fatalError("Fatal error: cannot create depth state")
+        }
+        self.depthState = depthState
+        
         metalView.clearColor = MTLClearColor(
             red: 1.0,
             green: 1.0,
             blue: 0.8,
             alpha: 1.0)
         metalView.delegate = self
+        
+        metalView.depthStencilPixelFormat = .depth32Float
+    }
+}
+
+extension Renderer {
+    func createDepthState(device: MTLDevice) -> MTLDepthStencilState? {
+        let descriptor = MTLDepthStencilDescriptor()
+        descriptor.depthCompareFunction = .less
+        descriptor.isDepthWriteEnabled = true
+        return device.makeDepthStencilState(descriptor: descriptor)
     }
 }
 
@@ -91,6 +116,10 @@ extension Renderer: MTKViewDelegate {
         _ view: MTKView,
         drawableSizeWillChange size: CGSize
     ) {
+        let width = size.width > 1 ? size.width : 1
+        let aspectRatio = size.height / width
+        
+        camera = .init(aspectRatio: Float(aspectRatio))
     }
     
     func draw(in view: MTKView) {
@@ -103,16 +132,16 @@ extension Renderer: MTKViewDelegate {
             return
         }
         
-        timer += 0.005
-        var currentTime = sin(timer)
-        
+        renderEncoder.setDepthStencilState(depthState)
         renderEncoder.setRenderPipelineState(pipelineState)
         
         // do drawing here
         
-        renderEncoder.setVertexBytes(&currentTime,
+        var projMatrix = camera.projMatrix
+        
+        renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<Float>.stride,
-                                     index: 11)
+                                     index: 10)
         
         renderEncoder.setVertexBuffer(model.vertexBuffer,
                                       offset: 0,

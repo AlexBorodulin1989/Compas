@@ -4,18 +4,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "MathLibrary",
+    name: "Camera",
     platforms: [.iOS(.v17)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "MathLibrary",
-            targets: ["MathLibrary"]),
+            name: "Camera",
+            targets: ["Camera"]),
+    ],
+    dependencies: [
+        .package(path: "../MathLibrary")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "MathLibrary"),
+            name: "Camera",
+            dependencies: [
+                .product(name: "MathLibrary", package: "MathLibrary"),
+            ]),
+
     ]
 )
