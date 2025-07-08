@@ -33,10 +33,15 @@
 #include <metal_stdlib>
 using namespace metal;
 
-vertex float4 vertex_main(float4 position [[ attribute(0) ]] [[ stage_in ]],
+struct VertexInput {
+    float4 pos [[attribute(0)]];
+    float4 norm [[attribute(1)]];
+};
+
+vertex float4 vertex_main(VertexInput vert [[stage_in]],
                           constant float4x4 &projection [[ buffer(10) ]],
                           uint vertexID [[ vertex_id ]]) {
-    float4 pos = projection * position;
+    float4 pos = projection * vert.pos;
     return pos;
 }
 

@@ -152,6 +152,10 @@ extension Renderer: MTKViewDelegate {
                                       offset: 0,
                                       index: 0)
         
+        renderEncoder.setVertexBuffer(model.normalsBuffer,
+                                      offset: 0,
+                                      index: 1)
+        
         renderEncoder.drawIndexedPrimitives(type: .triangle,
                                             indexCount: model.indicesAmount,
                                             indexType: .uint16,

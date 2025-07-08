@@ -12,6 +12,7 @@ import RuntimeError
 
 class HeadModel: Model {
     var vertexBuffer: MTLBuffer!
+    var normalsBuffer: MTLBuffer!
     var indexBuffer: MTLBuffer!
     
     let name = "african_head"

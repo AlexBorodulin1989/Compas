@@ -11,6 +11,7 @@ import RuntimeError
 
 class ArrowModel: Model {
     var vertexBuffer: MTLBuffer!
+    var normalsBuffer: MTLBuffer!
     var indexBuffer: MTLBuffer!
     
     let name = "direction_arrow"
@@ -23,8 +24,13 @@ class ArrowModel: Model {
         vertexDescriptor.attributes[0].offset = 0
         vertexDescriptor.attributes[0].bufferIndex = 0
         
-        let stride = MemoryLayout<float4>.stride
-        vertexDescriptor.layouts[0].stride = stride
+        vertexDescriptor.layouts[0].stride = MemoryLayout<float4>.stride
+        
+        vertexDescriptor.attributes[1].format = .float4
+        vertexDescriptor.attributes[1].offset = 0
+        vertexDescriptor.attributes[1].bufferIndex = 1
+        
+        vertexDescriptor.layouts[1].stride = MemoryLayout<float4>.stride
         
         return vertexDescriptor
     }
@@ -46,6 +52,7 @@ class ArrowModel: Model {
         let rotate = rotateZ * rotateX
         
         var vertices = modelLoader.vertices.map { rotate * float4($0 * scale, 1) }
+        var normals = modelLoader.vertices.map { float3x3(normalFrom4x4: rotate) * $0 }.map { float4($0, 1) }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count
@@ -56,6 +63,13 @@ class ArrowModel: Model {
             throw RuntimeError("Cannot create vertex buffer in file \(#file)")
         }
         self.vertexBuffer = vertexBuffer
+        
+        guard let normalsBuffer = device.makeBuffer(bytes: &normals,
+                                                   length: MemoryLayout<float4>.stride * normals.count)
+        else {
+            throw RuntimeError("Cannot create vertex buffer in file \(#file)")
+        }
+        self.normalsBuffer = normalsBuffer
         
         guard let indexBuffer = device.makeBuffer(bytes: &indices,
                                                   length: MemoryLayout<UInt16>.stride * indices.count)

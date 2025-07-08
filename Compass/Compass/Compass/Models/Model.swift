@@ -13,6 +13,7 @@ import MathLibrary
 protocol Model: AnyObject {
     var vertexBuffer: MTLBuffer! { get set }
     var indexBuffer: MTLBuffer! { get set }
+    var normalsBuffer: MTLBuffer! { get set }
     
     var vertexDescriptor: MTLVertexDescriptor { get }
     
