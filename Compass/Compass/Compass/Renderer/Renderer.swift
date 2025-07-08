@@ -45,10 +45,15 @@ class Renderer: NSObject {
     private let far: Double = 2
     private let near: Double = 1
     
-    var camera: Camera = .init()
+    var camera: Camera
     
     init(metalView: MTKView, device: MTLDevice, model: Model) {
         self.model = model
+        
+        let width = metalView.bounds.size.width > 1 ? metalView.bounds.size.width : 1
+        let aspectRatio = metalView.bounds.size.height / width
+        
+        camera = .init(aspectRatio: Float(aspectRatio))
         
         guard let commandQueue = device.makeCommandQueue()
         else {
@@ -137,12 +142,10 @@ extension Renderer: MTKViewDelegate {
         
         // do drawing here
         
-        var projMatrix = camera.projMatrix
-        
-        var matrix = projMatrix * float4x4(translation: .init(0, 0, 10))
+        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5))
         
         renderEncoder.setVertexBytes(&projMatrix,
-                                     length: MemoryLayout<Float>.stride,
+                                     length: MemoryLayout<float4x4>.stride,
                                      index: 10)
         
         renderEncoder.setVertexBuffer(model.vertexBuffer,

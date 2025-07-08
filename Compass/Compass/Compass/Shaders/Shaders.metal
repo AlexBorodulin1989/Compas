@@ -34,7 +34,7 @@
 using namespace metal;
 
 vertex float4 vertex_main(float4 position [[ attribute(0) ]] [[ stage_in ]],
-                          constant float &projection [[ buffer(10) ]],
+                          constant float4x4 &projection [[ buffer(10) ]],
                           uint vertexID [[ vertex_id ]]) {
     float4 pos = projection * position;
     return pos;
