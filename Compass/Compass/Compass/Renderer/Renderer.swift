@@ -32,6 +32,7 @@
 
 import MetalKit
 import Camera
+import CoreMotion
 
 // swiftlint:disable implicitly_unwrapped_optional
 
@@ -48,6 +49,12 @@ class Renderer: NSObject {
     var camera: Camera
     
     var rotation: Float = 0
+    
+    let motionManager = CMMotionManager()
+    let motionManagerQueue = OperationQueue()
+    var lastUpdateMotion = Date.now
+    
+    var rotationMatrix = float4x4.identity
     
     init(metalView: MTKView, device: MTLDevice, model: Model) {
         self.model = model
@@ -106,6 +113,30 @@ class Renderer: NSObject {
         metalView.delegate = self
         
         metalView.depthStencilPixelFormat = .depth32Float
+        
+        
+        motionManager.startDeviceMotionUpdates(to: motionManagerQueue) { [weak self] data, error in
+            guard let self, Date().timeIntervalSince(lastUpdateMotion) > 0.02 else { return }
+            
+            lastUpdateMotion = .now
+            
+            if let error {
+                return
+            }
+            
+            if let trackMotion = data?.attitude {
+                motionManager.deviceMotionUpdateInterval = 0.02
+                Task { @MainActor [weak self] in
+                    let matrix = trackMotion.rotationMatrix
+                    self?.rotationMatrix = .init(
+                        [Float(matrix.m11), Float(matrix.m21), Float(matrix.m31), 0],
+                        [Float(matrix.m12), Float(matrix.m22), Float(matrix.m32), 0],
+                        [Float(matrix.m13), Float(matrix.m23), Float(matrix.m33), 0],
+                        [0, 0, 0, 1]
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -144,7 +175,7 @@ extension Renderer: MTKViewDelegate {
         
         // do drawing here
         rotation += 0.01
-        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationX: rotation)
+        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5)) * rotationMatrix
         
         renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<float4x4>.stride,
