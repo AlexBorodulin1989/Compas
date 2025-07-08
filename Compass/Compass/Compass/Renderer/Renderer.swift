@@ -47,6 +47,8 @@ class Renderer: NSObject {
     
     var camera: Camera
     
+    var rotation: Float = 0
+    
     init(metalView: MTKView, device: MTLDevice, model: Model) {
         self.model = model
         
@@ -141,8 +143,8 @@ extension Renderer: MTKViewDelegate {
         renderEncoder.setRenderPipelineState(pipelineState)
         
         // do drawing here
-        
-        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5))
+        rotation += 0.01
+        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationX: rotation)
         
         renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<float4x4>.stride,
