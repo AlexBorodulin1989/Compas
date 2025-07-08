@@ -38,13 +38,29 @@ struct VertexInput {
     float4 norm [[attribute(1)]];
 };
 
-vertex float4 vertex_main(VertexInput vert [[stage_in]],
-                          constant float4x4 &projection [[ buffer(10) ]],
-                          uint vertexID [[ vertex_id ]]) {
-    float4 pos = projection * vert.pos;
-    return pos;
+struct FragmentInput {
+    float4 pos [[position]];
+    float diffKoef;
+};
+
+vertex FragmentInput vertex_main(VertexInput vert [[stage_in]],
+                                 constant float4x4 &projection [[ buffer(10) ]],
+                                 constant float3x3 &normProjection [[ buffer(11) ]],
+                                 uint vertexID [[ vertex_id ]]) {
+    auto sunDir = float3(0., 1., 0.);
+    auto normal = normProjection * vert.norm.xyz;
+    auto diffKoef = max(dot(normal, sunDir), 0.0);
+    
+    auto pos = projection * vert.pos;
+    
+    auto fragInpit = FragmentInput {
+        .pos = pos,
+        .diffKoef = diffKoef * 0.5
+    };
+    
+    return fragInpit;
 }
 
-fragment float4 fragment_main() {
-    return float4(0, 0, 1, 1);
+fragment float4 fragment_main(FragmentInput in [[stage_in]]) {
+    return float4(0, 0, 1, 1) * (in.diffKoef + 0.5);
 }

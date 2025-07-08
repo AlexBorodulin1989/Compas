@@ -148,6 +148,12 @@ extension Renderer: MTKViewDelegate {
                                      length: MemoryLayout<float4x4>.stride,
                                      index: 10)
         
+        var normProjMatrix = float3x3(normalFrom4x4: projMatrix)
+        
+        renderEncoder.setVertexBytes(&normProjMatrix,
+                                     length: MemoryLayout<float3x3>.stride,
+                                     index: 11)
+        
         renderEncoder.setVertexBuffer(model.vertexBuffer,
                                       offset: 0,
                                       index: 0)
