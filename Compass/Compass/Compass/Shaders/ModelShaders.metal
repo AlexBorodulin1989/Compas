@@ -45,22 +45,21 @@ struct FragmentInput {
 
 vertex FragmentInput vertex_main(VertexInput vert [[stage_in]],
                                  constant float4x4 &projection [[ buffer(10) ]],
-                                 constant float3x3 &normProjection [[ buffer(11) ]],
-                                 uint vertexID [[ vertex_id ]]) {
-    auto sunDir = float3(0., 1., 0.);
-    auto normal = normProjection * vert.norm.xyz;
+                                 constant float3x3 &normProjection [[ buffer(11) ]]) {
+    auto sunDir = normProjection * float3(0., 0., 1.);
+    auto normal = normProjection * normalize(vert.norm.xyz);
     auto diffKoef = max(dot(normal, sunDir), 0.0);
     
     auto pos = projection * vert.pos;
     
     auto fragInpit = FragmentInput {
         .pos = pos,
-        .diffKoef = diffKoef * 0.5
+        .diffKoef = diffKoef * 0.7
     };
     
     return fragInpit;
 }
 
 fragment float4 fragment_main(FragmentInput in [[stage_in]]) {
-    return float4(float3(0, 0, 1) * (in.diffKoef + 0.5), 1);
+    return float4(float3(0, 0, 1) * (in.diffKoef + 0.3), 1);
 }

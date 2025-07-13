@@ -52,7 +52,7 @@ class ArrowModel: Model {
         let rotate = rotateZ * rotateX
         
         var vertices = modelLoader.vertices.map { rotate * float4($0 * scale, 1) }
-        var normals = modelLoader.normals.map { float3x3(normalFrom4x4: rotate) * $0 }.map { float4($0, 1) }
+        var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: rotate) * $0).normalized() }.map { float4($0, 1) }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count

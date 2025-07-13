@@ -55,8 +55,8 @@ public class ModelLoader {
                     if let x = Float(separateValues[1]),
                        let y = Float(separateValues[2]),
                        let z = Float(separateValues[3]) {
-                        let vertex = float3(x, y, z)
-                        rawNormals.append(vertex)
+                        let normal = float3(x, y, z)
+                        rawNormals.append(normal.normalized())
                     }
                 }
             }
