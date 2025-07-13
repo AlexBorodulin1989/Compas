@@ -49,7 +49,7 @@ class ArrowModel: Model {
         
         let rotateX = float4x4(rotationX: Float(90).degreesToRadians)
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
-        let rotate = rotateZ * rotateX
+        let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
         
         var vertices = modelLoader.vertices.map { rotate * float4($0 * scale, 1) }
         var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: rotate) * $0).normalized() }.map { float4($0, 1) }
