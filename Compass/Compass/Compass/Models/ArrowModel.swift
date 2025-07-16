@@ -10,6 +10,11 @@ import ModelLoader
 import RuntimeError
 import MetalCamera
 
+enum ArrowColor {
+    case red
+    case blue
+}
+
 class ArrowModel: Model {
     var vertexBuffer: MTLBuffer!
     var normalsBuffer: MTLBuffer!
@@ -44,7 +49,8 @@ class ArrowModel: Model {
          camera: MetalCamera,
          colorPixelFormat: MTLPixelFormat,
          scale: Float = 1,
-         xOffset: Float) async throws {
+         xOffset: Float,
+         arrowColor: ArrowColor) async throws {
         
         self.camera = camera
         self.xOffset = xOffset
@@ -52,7 +58,13 @@ class ArrowModel: Model {
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
         let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
         
-        pipelineState = try await bluePipelineState(device: device, colorPixelFormat: colorPixelFormat)
+        switch arrowColor {
+        case .red:
+            pipelineState = try await redPipelineState(device: device, colorPixelFormat: colorPixelFormat)
+        case .blue:
+            pipelineState = try await bluePipelineState(device: device, colorPixelFormat: colorPixelFormat)
+        }
+        
         
         try await initialize(device: device, scale: scale, preTransformations: rotate)
     }
@@ -67,6 +79,28 @@ class ArrowModel: Model {
         let vertexFunction = library.makeFunction(name: "vertex_main")
         let fragmentFunction =
         library.makeFunction(name: "fragment_main_blue")
+        
+        // create the pipeline state object
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.vertexFunction = vertexFunction
+        pipelineDescriptor.fragmentFunction = fragmentFunction
+        pipelineDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
+        pipelineDescriptor.vertexDescriptor = Self.vertexDescriptor
+        pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+        
+        return try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+    }
+    
+    func redPipelineState(device: MTLDevice,
+                          colorPixelFormat: MTLPixelFormat) async throws -> MTLRenderPipelineState {
+        guard let library = device.makeDefaultLibrary()
+        else {
+            fatalError("Cannot create command queue")
+        }
+        
+        let vertexFunction = library.makeFunction(name: "vertex_main")
+        let fragmentFunction =
+        library.makeFunction(name: "fragment_main_red")
         
         // create the pipeline state object
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
