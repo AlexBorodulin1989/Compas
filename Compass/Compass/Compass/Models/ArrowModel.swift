@@ -36,10 +36,15 @@ class ArrowModel: Model {
     }
     
     init(device: MTLDevice, scale: Float = 1) async throws {
-        try await initialize(device: device, scale: scale)
+        let rotateX = float4x4(rotationX: Float(90).degreesToRadians)
+        let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
+        let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
+        try await initialize(device: device, scale: scale, preTransformations: rotate)
     }
-    
-    func initialize(device: MTLDevice, scale: Float = 1) async throws {
+}
+
+extension ArrowModel {
+    func initialize(device: MTLDevice, scale: Float = 1, preTransformations: float4x4 = .identity) async throws {
         guard let file = Bundle.main.url(forResource: name, withExtension: "obj")
         else {
             fatalError("Could not find \(name) in main bundle.")
@@ -47,12 +52,8 @@ class ArrowModel: Model {
         
         let modelLoader = await ModelLoader(fileUrl: file)
         
-        let rotateX = float4x4(rotationX: Float(90).degreesToRadians)
-        let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
-        let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
-        
-        var vertices = modelLoader.vertices.map { rotate * float4($0 * scale, 1) }
-        var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: rotate) * $0).normalized() }.map { float4($0, 1) }
+        var vertices = modelLoader.vertices.map { preTransformations * float4($0 * scale, 1) }
+        var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: preTransformations) * $0).normalized() }.map { float4($0, 1) }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count
