@@ -79,7 +79,7 @@ class Renderer: NSObject {
         
         let vertexFunction = library.makeFunction(name: "vertex_main")
         let fragmentFunction =
-        library.makeFunction(name: "fragment_main")
+        library.makeFunction(name: "fragment_main_blue")
         
         // create the pipeline state object
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
@@ -89,16 +89,8 @@ class Renderer: NSObject {
         pipelineDescriptor.vertexDescriptor = model.vertexDescriptor
         pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
         
-//        pipelineDescriptor.isAlphaToCoverageEnabled = true
-//        pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-//        pipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
-//        pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
-//        pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
-        
         do {
-            pipelineState =
-            try device.makeRenderPipelineState(
-                descriptor: pipelineDescriptor)
+            pipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
         } catch let error {
             fatalError(error.localizedDescription)
         }
@@ -189,13 +181,25 @@ extension Renderer: MTKViewDelegate {
             return
         }
         
+        drawArray(renderEncoder: renderEncoder, xOffset: 0.1)
+        drawArray(renderEncoder: renderEncoder, xOffset: 0)
+        
+        renderEncoder.endEncoding()
+        guard let drawable = view.currentDrawable else {
+            return
+        }
+        commandBuffer.present(drawable)
+        commandBuffer.commit()
+    }
+    
+    func drawArray(renderEncoder: MTLRenderCommandEncoder, xOffset: Float) {
         renderEncoder.setCullMode(.none)
         renderEncoder.setDepthStencilState(depthState)
         renderEncoder.setRenderPipelineState(pipelineState)
         
         // do drawing here
         rotation += 0.01
-        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
+        var projMatrix = camera.projMatrix * float4x4(translation: .init(xOffset, 0, 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
         
         renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<float4x4>.stride,
@@ -220,12 +224,5 @@ extension Renderer: MTKViewDelegate {
                                             indexType: .uint16,
                                             indexBuffer: model.indexBuffer,
                                             indexBufferOffset: 0)
-        
-        renderEncoder.endEncoding()
-        guard let drawable = view.currentDrawable else {
-            return
-        }
-        commandBuffer.present(drawable)
-        commandBuffer.commit()
     }
 }

@@ -26,5 +26,5 @@ vertex float4 normal_vertex_main(constant float4 &positions [[ buffer(0) ]],
 }
 
 fragment float4 normal_fragment_main() {
-    return float4(0, 0, 0, 1);
+    return float4(1, 0, 0, 1);
 }

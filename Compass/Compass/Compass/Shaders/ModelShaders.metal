@@ -60,6 +60,10 @@ vertex FragmentInput vertex_main(VertexInput vert [[stage_in]],
     return fragInpit;
 }
 
-fragment float4 fragment_main(FragmentInput in [[stage_in]]) {
+fragment float4 fragment_main_blue(FragmentInput in [[stage_in]]) {
     return float4(float3(0, 0, 1) * (in.diffKoef + 0.3), 1);
+}
+
+fragment float4 fragment_main_red(FragmentInput in [[stage_in]]) {
+    return float4(float3(1, 0, 0) * (in.diffKoef + 0.3), 1);
 }
