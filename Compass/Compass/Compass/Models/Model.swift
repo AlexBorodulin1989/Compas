@@ -16,8 +16,6 @@ protocol Model: AnyObject {
     var indexBuffer: MTLBuffer! { get set }
     var normalsBuffer: MTLBuffer! { get set }
     
-    var vertexDescriptor: MTLVertexDescriptor { get }
-    
     var indicesAmount: Int { get set }
     
     var name: String { get }

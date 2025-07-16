@@ -21,6 +21,9 @@ class HeadModel: Model {
     
     var indicesAmount: Int = 0
     
+    var pipelineState: MTLRenderPipelineState
+    let library: MTLLibrary
+    
     var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float4
@@ -38,12 +41,60 @@ class HeadModel: Model {
         return vertexDescriptor
     }
     
-    init(device: MTLDevice, camera: MetalCamera, scale: Float = 1) async throws {
+    static var vertexDescriptor: MTLVertexDescriptor {
+        let vertexDescriptor = MTLVertexDescriptor()
+        vertexDescriptor.attributes[0].format = .float4
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        
+        vertexDescriptor.layouts[0].stride = MemoryLayout<float4>.stride
+        
+        vertexDescriptor.attributes[1].format = .float4
+        vertexDescriptor.attributes[1].offset = 0
+        vertexDescriptor.attributes[1].bufferIndex = 1
+        
+        vertexDescriptor.layouts[1].stride = MemoryLayout<float4>.stride
+        
+        return vertexDescriptor
+    }
+    
+    init(device: MTLDevice,
+         camera: MetalCamera,
+         colorPixelFormat: MTLPixelFormat,
+         scale: Float = 1) async throws {
+        
         self.camera = camera
+        
+        guard let library = device.makeDefaultLibrary()
+        else {
+            fatalError("Cannot create command queue")
+        }
+        self.library = library
+        
+        let vertexFunction = library.makeFunction(name: "vertex_main")
+        let fragmentFunction =
+        library.makeFunction(name: "fragment_main_blue")
+        
+        // create the pipeline state object
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.vertexFunction = vertexFunction
+        pipelineDescriptor.fragmentFunction = fragmentFunction
+        pipelineDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
+        pipelineDescriptor.vertexDescriptor = Self.vertexDescriptor
+        pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+        
+        do {
+            pipelineState = try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
+        
         try await initialize(device: device, scale: scale, preTransformations: float4x4(rotationY: .pi))
     }
     
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        renderEncoder.setRenderPipelineState(pipelineState)
+        
         var projMatrix = camera.projMatrix * float4x4(translation: .init(x: 0, y: 0, z: 1.1))
         
         renderEncoder.setVertexBytes(&projMatrix,

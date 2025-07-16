@@ -39,8 +39,6 @@ import CoreMotion
 class Renderer: NSObject {
     let model: Model
     let commandQueue: MTLCommandQueue!
-    let library: MTLLibrary
-    var pipelineState: MTLRenderPipelineState
     private var depthState: MTLDepthStencilState!
     
     private let far: Double = 2
@@ -71,30 +69,6 @@ class Renderer: NSObject {
         }
         self.commandQueue = commandQueue
         metalView.device = device
-        
-        guard let library = device.makeDefaultLibrary()
-        else {
-            fatalError("Cannot create command queue")
-        }
-        self.library = library
-        
-        let vertexFunction = library.makeFunction(name: "vertex_main")
-        let fragmentFunction =
-        library.makeFunction(name: "fragment_main_blue")
-        
-        // create the pipeline state object
-        let pipelineDescriptor = MTLRenderPipelineDescriptor()
-        pipelineDescriptor.vertexFunction = vertexFunction
-        pipelineDescriptor.fragmentFunction = fragmentFunction
-        pipelineDescriptor.colorAttachments[0].pixelFormat = metalView.colorPixelFormat
-        pipelineDescriptor.vertexDescriptor = model.vertexDescriptor
-        pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
-        
-        do {
-            pipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
-        } catch let error {
-            fatalError(error.localizedDescription)
-        }
         
         super.init()
         
@@ -184,7 +158,6 @@ extension Renderer: MTKViewDelegate {
         
         renderEncoder.setCullMode(.none)
         renderEncoder.setDepthStencilState(depthState)
-        renderEncoder.setRenderPipelineState(pipelineState)
         
         model.draw(renderEncoder: renderEncoder)
         

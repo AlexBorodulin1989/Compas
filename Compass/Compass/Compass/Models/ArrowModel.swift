@@ -20,7 +20,10 @@ class ArrowModel: Model {
     
     var indicesAmount = 0
     
-    var vertexDescriptor: MTLVertexDescriptor {
+    var pipelineState: MTLRenderPipelineState
+    let library: MTLLibrary
+    
+    static var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float4
         vertexDescriptor.attributes[0].offset = 0
@@ -37,15 +40,46 @@ class ArrowModel: Model {
         return vertexDescriptor
     }
     
-    init(device: MTLDevice, camera: MetalCamera, scale: Float = 1) async throws {
+    init(device: MTLDevice,
+         camera: MetalCamera,
+         colorPixelFormat: MTLPixelFormat,
+         scale: Float = 1) async throws {
+        
         self.camera = camera
         let rotateX = float4x4(rotationX: Float(90).degreesToRadians)
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
         let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
+        
+        guard let library = device.makeDefaultLibrary()
+        else {
+            fatalError("Cannot create command queue")
+        }
+        self.library = library
+        
+        let vertexFunction = library.makeFunction(name: "vertex_main")
+        let fragmentFunction =
+        library.makeFunction(name: "fragment_main_blue")
+        
+        // create the pipeline state object
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.vertexFunction = vertexFunction
+        pipelineDescriptor.fragmentFunction = fragmentFunction
+        pipelineDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
+        pipelineDescriptor.vertexDescriptor = Self.vertexDescriptor
+        pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+        
+        do {
+            pipelineState = try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
+        
         try await initialize(device: device, scale: scale, preTransformations: rotate)
     }
     
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        renderEncoder.setRenderPipelineState(pipelineState)
+        
         var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians)
         
         renderEncoder.setVertexBytes(&projMatrix,
