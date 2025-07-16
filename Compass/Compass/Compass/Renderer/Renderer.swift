@@ -199,7 +199,7 @@ extension Renderer: MTKViewDelegate {
         
         // do drawing here
         rotation += 0.01
-        var projMatrix = camera.projMatrix * float4x4(translation: .init(xOffset, 0, 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
+        var projMatrix = camera.projMatrix// * float4x4(translation: .init(xOffset, 0, 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
         
         renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<float4x4>.stride,
