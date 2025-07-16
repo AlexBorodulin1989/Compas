@@ -9,6 +9,7 @@ import MetalKit
 import MathLibrary
 import ModelLoader
 import RuntimeError
+import MetalCamera
 
 class HeadModel: Model {
     var vertexBuffer: MTLBuffer!
@@ -16,6 +17,7 @@ class HeadModel: Model {
     var indexBuffer: MTLBuffer!
     
     let name = "african_head"
+    let camera: MetalCamera
     
     var indicesAmount: Int = 0
     
@@ -36,7 +38,36 @@ class HeadModel: Model {
         return vertexDescriptor
     }
     
-    init(device: MTLDevice, scale: Float = 1) async throws {
+    init(device: MTLDevice, camera: MetalCamera, scale: Float = 1) async throws {
+        self.camera = camera
         try await initialize(device: device, scale: scale)
+    }
+    
+    func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        var projMatrix = camera.projMatrix
+        
+        renderEncoder.setVertexBytes(&projMatrix,
+                                     length: MemoryLayout<float4x4>.stride,
+                                     index: 10)
+        
+        var normProjMatrix = float3x3(normalFrom4x4: projMatrix)
+        
+        renderEncoder.setVertexBytes(&normProjMatrix,
+                                     length: MemoryLayout<float3x3>.stride,
+                                     index: 11)
+        
+        renderEncoder.setVertexBuffer(vertexBuffer,
+                                      offset: 0,
+                                      index: 0)
+        
+        renderEncoder.setVertexBuffer(normalsBuffer,
+                                      offset: 0,
+                                      index: 1)
+        
+        renderEncoder.drawIndexedPrimitives(type: .triangle,
+                                            indexCount: indicesAmount,
+                                            indexType: .uint16,
+                                            indexBuffer: indexBuffer,
+                                            indexBufferOffset: 0)
     }
 }

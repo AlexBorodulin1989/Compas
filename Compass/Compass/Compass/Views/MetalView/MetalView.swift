@@ -32,20 +32,24 @@
 
 import SwiftUI
 import MetalKit
+import MetalCamera
 
 struct MetalView: View {
     @State private var renderer: Renderer?
     @State private var metalView = MTKView()
+    
+    let camera = MetalCamera()
     
     var body: some View {
         VStack {
             MetalViewRepresentable(renderer: renderer,
                                    metalView: $metalView)
             .task {
-                if let model = try? await HeadModel(device: GPUDevice.instance.mtlDevice, scale: 0.2) {
+                if let model = try? await ArrowModel(device: GPUDevice.instance.mtlDevice, camera: camera, scale: 0.2) {
                     renderer = Renderer(metalView: metalView,
                                         device: GPUDevice.instance.mtlDevice,
-                                        model: model)
+                                        model: model,
+                                        camera: camera)
                 }
             }
         }

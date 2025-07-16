@@ -46,7 +46,7 @@ class Renderer: NSObject {
     private let far: Double = 2
     private let near: Double = 1
     
-    var camera: MetalCamera
+    let camera: MetalCamera
     
     var rotation: Float = 0
     
@@ -56,13 +56,14 @@ class Renderer: NSObject {
     
     var rotationMatrix = float4x4.identity
     
-    init(metalView: MTKView, device: MTLDevice, model: Model) {
+    init(metalView: MTKView, device: MTLDevice, model: Model, camera: MetalCamera) {
         self.model = model
+        self.camera = camera
         
         let width = metalView.bounds.size.width > 1 ? metalView.bounds.size.width : 1
         let aspectRatio = metalView.bounds.size.height / width
         
-        camera = .init(aspectRatio: Float(aspectRatio))
+        camera.setAspectRatio(Float(aspectRatio))
         
         guard let commandQueue = device.makeCommandQueue()
         else {
@@ -160,7 +161,7 @@ extension Renderer: MTKViewDelegate {
         let width = size.width > 1 ? size.width : 1
         let aspectRatio = size.height / width
         
-        camera = .init(aspectRatio: Float(aspectRatio))
+        camera.setAspectRatio(Float(aspectRatio))
     }
     
     func draw(in view: MTKView) {
@@ -181,8 +182,11 @@ extension Renderer: MTKViewDelegate {
             return
         }
         
-        drawArray(renderEncoder: renderEncoder, xOffset: 0.1)
-        drawArray(renderEncoder: renderEncoder, xOffset: 0)
+        renderEncoder.setCullMode(.none)
+        renderEncoder.setDepthStencilState(depthState)
+        renderEncoder.setRenderPipelineState(pipelineState)
+        
+        model.draw(renderEncoder: renderEncoder)
         
         renderEncoder.endEncoding()
         guard let drawable = view.currentDrawable else {
@@ -190,39 +194,5 @@ extension Renderer: MTKViewDelegate {
         }
         commandBuffer.present(drawable)
         commandBuffer.commit()
-    }
-    
-    func drawArray(renderEncoder: MTLRenderCommandEncoder, xOffset: Float) {
-        renderEncoder.setCullMode(.none)
-        renderEncoder.setDepthStencilState(depthState)
-        renderEncoder.setRenderPipelineState(pipelineState)
-        
-        // do drawing here
-        rotation += 0.01
-        var projMatrix = camera.projMatrix// * float4x4(translation: .init(xOffset, 0, 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
-        
-        renderEncoder.setVertexBytes(&projMatrix,
-                                     length: MemoryLayout<float4x4>.stride,
-                                     index: 10)
-        
-        var normProjMatrix = float3x3(normalFrom4x4: projMatrix)
-        
-        renderEncoder.setVertexBytes(&normProjMatrix,
-                                     length: MemoryLayout<float3x3>.stride,
-                                     index: 11)
-        
-        renderEncoder.setVertexBuffer(model.vertexBuffer,
-                                      offset: 0,
-                                      index: 0)
-        
-        renderEncoder.setVertexBuffer(model.normalsBuffer,
-                                      offset: 0,
-                                      index: 1)
-        
-        renderEncoder.drawIndexedPrimitives(type: .triangle,
-                                            indexCount: model.indicesAmount,
-                                            indexType: .uint16,
-                                            indexBuffer: model.indexBuffer,
-                                            indexBufferOffset: 0)
     }
 }

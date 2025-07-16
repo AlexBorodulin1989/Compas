@@ -8,6 +8,7 @@ import MetalKit
 import MathLibrary
 import ModelLoader
 import RuntimeError
+import MetalCamera
 
 class ArrowModel: Model {
     var vertexBuffer: MTLBuffer!
@@ -15,6 +16,7 @@ class ArrowModel: Model {
     var indexBuffer: MTLBuffer!
     
     let name = "direction_arrow"
+    let camera: MetalCamera
     
     var indicesAmount = 0
     
@@ -35,10 +37,39 @@ class ArrowModel: Model {
         return vertexDescriptor
     }
     
-    init(device: MTLDevice, scale: Float = 1) async throws {
+    init(device: MTLDevice, camera: MetalCamera, scale: Float = 1) async throws {
+        self.camera = camera
         let rotateX = float4x4(rotationX: Float(90).degreesToRadians)
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
         let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
         try await initialize(device: device, scale: scale, preTransformations: rotate)
+    }
+    
+    func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        var projMatrix = camera.projMatrix * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians)
+        
+        renderEncoder.setVertexBytes(&projMatrix,
+                                     length: MemoryLayout<float4x4>.stride,
+                                     index: 10)
+        
+        var normProjMatrix = float3x3(normalFrom4x4: projMatrix)
+        
+        renderEncoder.setVertexBytes(&normProjMatrix,
+                                     length: MemoryLayout<float3x3>.stride,
+                                     index: 11)
+        
+        renderEncoder.setVertexBuffer(vertexBuffer,
+                                      offset: 0,
+                                      index: 0)
+        
+        renderEncoder.setVertexBuffer(normalsBuffer,
+                                      offset: 0,
+                                      index: 1)
+        
+        renderEncoder.drawIndexedPrimitives(type: .triangle,
+                                            indexCount: indicesAmount,
+                                            indexType: .uint16,
+                                            indexBuffer: indexBuffer,
+                                            indexBufferOffset: 0)
     }
 }

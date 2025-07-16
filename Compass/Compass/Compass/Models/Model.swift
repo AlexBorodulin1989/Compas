@@ -21,6 +21,8 @@ protocol Model: AnyObject {
     var indicesAmount: Int { get set }
     
     var name: String { get }
+    
+    func draw(renderEncoder: MTLRenderCommandEncoder)
 }
 
 extension Model {
