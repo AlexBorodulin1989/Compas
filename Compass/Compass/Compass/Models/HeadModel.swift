@@ -22,7 +22,6 @@ class HeadModel: Model {
     var indicesAmount: Int = 0
     
     var pipelineState: MTLRenderPipelineState
-    let library: MTLLibrary
     
     var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
@@ -69,7 +68,6 @@ class HeadModel: Model {
         else {
             fatalError("Cannot create command queue")
         }
-        self.library = library
         
         let vertexFunction = library.makeFunction(name: "vertex_main")
         let fragmentFunction =

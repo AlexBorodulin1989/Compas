@@ -55,7 +55,7 @@ struct MetalView: View {
                                                        camera: camera,
                                                        colorPixelFormat: metalView.colorPixelFormat,
                                                        scale: 0.2)
-                if let model = arrowModel {
+                if let model = headModel {
                     renderer = Renderer(metalView: metalView,
                                         device: GPUDevice.instance.mtlDevice,
                                         model: model,
