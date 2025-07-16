@@ -40,11 +40,11 @@ class HeadModel: Model {
     
     init(device: MTLDevice, camera: MetalCamera, scale: Float = 1) async throws {
         self.camera = camera
-        try await initialize(device: device, scale: scale)
+        try await initialize(device: device, scale: scale, preTransformations: float4x4(rotationY: .pi))
     }
     
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
-        var projMatrix = camera.projMatrix
+        var projMatrix = camera.projMatrix * float4x4(translation: .init(x: 0, y: 0, z: 1.1))
         
         renderEncoder.setVertexBytes(&projMatrix,
                                      length: MemoryLayout<float4x4>.stride,
