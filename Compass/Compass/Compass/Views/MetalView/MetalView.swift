@@ -51,15 +51,22 @@ struct MetalView: View {
                                                         metalView.colorPixelFormat,
                                                      scale: 1.0)
                 
-                let arrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-                                                       camera: camera,
-                                                       colorPixelFormat: metalView.colorPixelFormat,
-                                                       scale: 0.2,
-                                                       xOffset: 0.1)
-                if let model = arrowModel {
+                let blueArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+                                                           camera: camera,
+                                                           colorPixelFormat: metalView.colorPixelFormat,
+                                                           scale: 0.2,
+                                                           xOffset: 0.2)
+                
+                let redArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+                                                          camera: camera,
+                                                          colorPixelFormat: metalView.colorPixelFormat,
+                                                          scale: 0.2,
+                                                          xOffset: -0.2)
+                
+                if let blueArrowModel, let redArrowModel {
                     renderer = Renderer(metalView: metalView,
                                         device: GPUDevice.instance.mtlDevice,
-                                        model: model,
+                                        models: [blueArrowModel, redArrowModel],
                                         camera: camera)
                 }
             }

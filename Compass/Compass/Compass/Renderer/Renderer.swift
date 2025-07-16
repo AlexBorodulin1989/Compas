@@ -37,7 +37,7 @@ import CoreMotion
 // swiftlint:disable implicitly_unwrapped_optional
 
 class Renderer: NSObject {
-    let model: Model
+    let models: [Model]
     let commandQueue: MTLCommandQueue!
     private var depthState: MTLDepthStencilState!
     
@@ -54,8 +54,8 @@ class Renderer: NSObject {
     
     var rotationMatrix = float4x4.identity
     
-    init(metalView: MTKView, device: MTLDevice, model: Model, camera: MetalCamera) {
-        self.model = model
+    init(metalView: MTKView, device: MTLDevice, models: [Model], camera: MetalCamera) {
+        self.models = models
         self.camera = camera
         
         let width = metalView.bounds.size.width > 1 ? metalView.bounds.size.width : 1
@@ -159,7 +159,7 @@ extension Renderer: MTKViewDelegate {
         renderEncoder.setCullMode(.none)
         renderEncoder.setDepthStencilState(depthState)
         
-        model.draw(renderEncoder: renderEncoder)
+        models.forEach { $0.draw(renderEncoder: renderEncoder) }
         
         renderEncoder.endEncoding()
         guard let drawable = view.currentDrawable else {
