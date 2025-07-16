@@ -2,7 +2,7 @@ import simd
 import CoreFoundation
 import MathLibrary
 
-public class MetalCamera {
+public final class MetalCamera: @unchecked Sendable {
     private let far: Float = 1
     private let near: Float = 0.1
     private var _projMatrix: float4x4 = .identity

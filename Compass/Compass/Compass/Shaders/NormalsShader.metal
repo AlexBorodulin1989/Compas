@@ -13,7 +13,6 @@ vertex float4 normal_vertex_main(constant float4 &positions [[ buffer(0) ]],
                           constant float4x4 &projection [[ buffer(10) ]],
                           constant float3x3 &normProjection [[ buffer(11) ]],
                           uint vertexID [[ vertex_id ]]) {
-    auto sunDir = float3(0., 1., 0.);
     auto index = vertexID / 2;
     float4 position = positions[index];
     if (index * 2 != vertexID) {

@@ -122,7 +122,7 @@ class Renderer: NSObject {
             
             lastUpdateMotion = .now
             
-            if let error {
+            if error != nil {
                 return
             }
             
