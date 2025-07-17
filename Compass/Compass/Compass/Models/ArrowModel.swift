@@ -186,7 +186,7 @@ class ArrowModel: Model {
                                       offset: 0,
                                       index: 1)
         
-        var model = float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
+        var model = float4x4(translation: .init(0, 0, 0.5)) * rotationMatrix * float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(rotationZ: Float(180).degreesToRadians)
         
         if drawNormals {
             var projMatrix = camera.projMatrix
