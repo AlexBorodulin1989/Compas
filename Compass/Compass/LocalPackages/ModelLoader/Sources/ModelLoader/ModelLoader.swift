@@ -35,7 +35,7 @@ public class ModelLoader {
                     if let x = Float(separateValues[1]),
                        let y = Float(separateValues[2]),
                        let z = Float(separateValues[3]) {
-                        let vertex = float3(x, y, z)
+                        let vertex = float3(x, y, -z)
                         _vertices.append(vertex)
                         
                         maxAbsVertexPosValue = max(max(max(abs(x), abs(y)), abs(z)), maxAbsVertexPosValue)
@@ -55,7 +55,7 @@ public class ModelLoader {
                     if let x = Float(separateValues[1]),
                        let y = Float(separateValues[2]),
                        let z = Float(separateValues[3]) {
-                        let normal = float3(x, y, z)
+                        let normal = float3(x, y, -z)
                         rawNormals.append(normal.normalized())
                     }
                 }

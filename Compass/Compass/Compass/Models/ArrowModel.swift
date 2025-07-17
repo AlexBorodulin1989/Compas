@@ -173,7 +173,7 @@ class ArrowModel: Model {
             
             renderEncoder.drawPrimitives(type: .line,
                                          vertexStart: 0,
-                                         vertexCount: indicesAmount)
+                                         vertexCount: indicesAmount * 2)
         } else {
             
             

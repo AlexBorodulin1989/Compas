@@ -123,7 +123,7 @@ extension Renderer: MTKViewDelegate {
             return
         }
         
-        renderEncoder.setCullMode(.none)
+        renderEncoder.setCullMode(.front)
         renderEncoder.setDepthStencilState(depthState)
         
         models.forEach { $0.draw(renderEncoder: renderEncoder) }

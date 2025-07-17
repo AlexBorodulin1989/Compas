@@ -22,7 +22,10 @@ class HeadModel: Model {
     
     var indicesAmount: Int = 0
     
-    var pipelineState: MTLRenderPipelineState
+    var pipelineState: MTLRenderPipelineState!
+    private let drawNormals: Bool
+    
+    private var time: Float = 0
     
     var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
@@ -61,10 +64,23 @@ class HeadModel: Model {
     init(device: MTLDevice,
          camera: MetalCamera,
          colorPixelFormat: MTLPixelFormat,
-         scale: Float = 1) async throws {
+         scale: Float = 1,
+         drawNormals: Bool = false) async throws {
         
         self.camera = camera
+        self.drawNormals = drawNormals
         
+        if drawNormals {
+            pipelineState = try await normalsPipelineState(device: device, colorPixelFormat: colorPixelFormat)
+        } else {
+            pipelineState = try await bluePipelineState(device: device, colorPixelFormat: colorPixelFormat)
+        }
+        
+        try await initialize(device: device, scale: scale)
+    }
+    
+    func bluePipelineState(device: MTLDevice,
+                           colorPixelFormat: MTLPixelFormat) async throws -> MTLRenderPipelineState {
         guard let library = device.makeDefaultLibrary()
         else {
             fatalError("Cannot create command queue")
@@ -82,29 +98,34 @@ class HeadModel: Model {
         pipelineDescriptor.vertexDescriptor = Self.vertexDescriptor
         pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
         
-        do {
-            pipelineState = try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
-        } catch let error {
-            fatalError(error.localizedDescription)
+        return try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+    }
+    
+    func normalsPipelineState(device: MTLDevice,
+                              colorPixelFormat: MTLPixelFormat) async throws -> MTLRenderPipelineState {
+        guard let library = device.makeDefaultLibrary()
+        else {
+            fatalError("Cannot create command queue")
         }
         
-        try await initialize(device: device, scale: scale, preTransformations: float4x4(rotationY: .pi))
+        let vertexFunction = library.makeFunction(name: "normal_vertex_main")
+        let fragmentFunction =
+        library.makeFunction(name: "normal_fragment_main")
+        
+        // create the pipeline state object
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.vertexFunction = vertexFunction
+        pipelineDescriptor.fragmentFunction = fragmentFunction
+        pipelineDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
+        pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+        
+        return try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
     }
     
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
         renderEncoder.setRenderPipelineState(pipelineState)
         
-        var projMatrix = camera.projMatrix * float4x4(translation: .init(x: 0, y: 0, z: 1.1))
-        
-        renderEncoder.setVertexBytes(&projMatrix,
-                                     length: MemoryLayout<float4x4>.stride,
-                                     index: 10)
-        
-        var normProjMatrix = float3x3(normalFrom4x4: projMatrix)
-        
-        renderEncoder.setVertexBytes(&normProjMatrix,
-                                     length: MemoryLayout<float3x3>.stride,
-                                     index: 11)
+        time += 0.001
         
         renderEncoder.setVertexBuffer(vertexBuffer,
                                       offset: 0,
@@ -114,10 +135,50 @@ class HeadModel: Model {
                                       offset: 0,
                                       index: 1)
         
-        renderEncoder.drawIndexedPrimitives(type: .triangle,
-                                            indexCount: indicesAmount,
-                                            indexType: .uint16,
-                                            indexBuffer: indexBuffer,
-                                            indexBufferOffset: 0)
+        var model = float4x4(translation: .init(x: 0, y: 0, z: 1.1)) * float4x4(rotationY: time)
+        
+        if drawNormals {
+            var projMatrix = camera.projMatrix
+            
+            renderEncoder.setVertexBytes(&projMatrix,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 10)
+            
+            renderEncoder.setVertexBytes(&model,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 11)
+            
+            var normMatrix = float3x3(normalFrom4x4: model)
+            
+            renderEncoder.setVertexBytes(&normMatrix,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 12)
+            
+            renderEncoder.setVertexBuffer(indexBuffer,
+                                          offset: 0,
+                                          index: 2)
+            
+            renderEncoder.drawPrimitives(type: .line,
+                                         vertexStart: 0,
+                                         vertexCount: indicesAmount * 2)
+        } else {
+            var viewMatrix = camera.projMatrix * model
+            
+            renderEncoder.setVertexBytes(&viewMatrix,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 10)
+            
+            var normMatrix = float3x3(normalFrom4x4: model)
+            
+            renderEncoder.setVertexBytes(&normMatrix,
+                                         length: MemoryLayout<float3x3>.stride,
+                                         index: 11)
+            
+            renderEncoder.drawIndexedPrimitives(type: .triangle,
+                                                indexCount: indicesAmount,
+                                                indexType: .uint16,
+                                                indexBuffer: indexBuffer,
+                                                indexBufferOffset: 0)
+        }
     }
 }
