@@ -10,6 +10,7 @@ import ModelLoader
 import RuntimeError
 import MetalCamera
 import Model
+import CoreMotion
 
 enum ArrowColor {
     case red
@@ -30,6 +31,12 @@ class ArrowModel: Model {
     var pipelineState: MTLRenderPipelineState!
     
     private let drawNormals: Bool
+    
+    private let motionManager = CMMotionManager()
+    private let motionManagerQueue = OperationQueue()
+    private var lastUpdateMotion = Date.now
+    
+    private var rotationMatrix = float4x4.identity
     
     static var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
@@ -76,6 +83,31 @@ class ArrowModel: Model {
         }
         
         try await initialize(device: device, scale: scale, preTransformations: rotate)
+        
+        motionManager.startDeviceMotionUpdates(to: motionManagerQueue) { [weak self] data, error in
+            guard let self, Date().timeIntervalSince(lastUpdateMotion) > 0.02 else { return }
+            
+            lastUpdateMotion = .now
+            
+            if error != nil {
+                return
+            }
+            
+            if let trackMotion = data?.attitude {
+                motionManager.deviceMotionUpdateInterval = 0.02
+                Task { @MainActor [weak self] in
+                    let matrix = trackMotion.rotationMatrix
+                    self?.rotationMatrix = .init(
+                        [Float(matrix.m11), Float(matrix.m21), Float(matrix.m31), 0],
+                        [Float(matrix.m12), Float(matrix.m22), Float(matrix.m32), 0],
+                        [Float(matrix.m13), Float(matrix.m23), Float(matrix.m33), 0],
+                        [0, 0, 0, 1]
+                    )
+                }
+                
+                print("pitch = \(trackMotion.pitch), yaw = \(trackMotion.yaw), roll = \(trackMotion.roll)")
+            }
+        }
     }
     
     func bluePipelineState(device: MTLDevice,
@@ -154,7 +186,7 @@ class ArrowModel: Model {
                                       offset: 0,
                                       index: 1)
         
-        var model = float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians)
+        var model = float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians) * rotationMatrix
         
         if drawNormals {
             var projMatrix = camera.projMatrix

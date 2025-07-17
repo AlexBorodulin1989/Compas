@@ -45,8 +45,6 @@ class Renderer: NSObject {
     
     var rotation: Float = 0
     
-    var rotationMatrix = float4x4.identity
-    
     init(metalView: MTKView, device: MTLDevice, models: [Model], camera: MetalCamera) {
         self.models = models
         self.camera = camera
