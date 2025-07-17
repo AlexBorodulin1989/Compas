@@ -146,18 +146,6 @@ class ArrowModel: Model {
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
         renderEncoder.setRenderPipelineState(pipelineState)
         
-        var projMatrix = camera.projMatrix * float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians)
-        
-        renderEncoder.setVertexBytes(&projMatrix,
-                                     length: MemoryLayout<float4x4>.stride,
-                                     index: 10)
-        
-        var normProjMatrix = float3x3(normalFrom4x4: projMatrix)
-        
-        renderEncoder.setVertexBytes(&normProjMatrix,
-                                     length: MemoryLayout<float3x3>.stride,
-                                     index: 11)
-        
         renderEncoder.setVertexBuffer(vertexBuffer,
                                       offset: 0,
                                       index: 0)
@@ -166,7 +154,25 @@ class ArrowModel: Model {
                                       offset: 0,
                                       index: 1)
         
+        var model = float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(translation: .init(0, 0, 0.5)) * float4x4(rotationZ: Float(180).degreesToRadians)
+        
         if drawNormals {
+            var projMatrix = camera.projMatrix
+            
+            renderEncoder.setVertexBytes(&projMatrix,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 10)
+            
+            renderEncoder.setVertexBytes(&model,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 11)
+            
+            var normMatrix = float3x3(normalFrom4x4: model)
+            
+            renderEncoder.setVertexBytes(&normMatrix,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 12)
+            
             renderEncoder.setVertexBuffer(indexBuffer,
                                           offset: 0,
                                           index: 2)
@@ -175,7 +181,17 @@ class ArrowModel: Model {
                                          vertexStart: 0,
                                          vertexCount: indicesAmount * 2)
         } else {
+            var viewMatrix = camera.projMatrix * model
             
+            renderEncoder.setVertexBytes(&viewMatrix,
+                                         length: MemoryLayout<float4x4>.stride,
+                                         index: 10)
+            
+            var normProjMatrix = float3x3(normalFrom4x4: model)
+            
+            renderEncoder.setVertexBytes(&normProjMatrix,
+                                         length: MemoryLayout<float3x3>.stride,
+                                         index: 11)
             
             renderEncoder.drawIndexedPrimitives(type: .triangle,
                                                 indexCount: indicesAmount,
