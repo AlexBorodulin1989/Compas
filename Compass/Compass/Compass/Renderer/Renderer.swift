@@ -32,7 +32,6 @@
 
 import MetalKit
 import MetalCamera
-import CoreMotion
 import Model
 
 // swiftlint:disable implicitly_unwrapped_optional
@@ -42,16 +41,9 @@ class Renderer: NSObject {
     let commandQueue: MTLCommandQueue!
     private var depthState: MTLDepthStencilState!
     
-    private let far: Double = 2
-    private let near: Double = 1
-    
     let camera: MetalCamera
     
     var rotation: Float = 0
-    
-    let motionManager = CMMotionManager()
-    let motionManagerQueue = OperationQueue()
-    var lastUpdateMotion = Date.now
     
     var rotationMatrix = float4x4.identity
     
@@ -90,32 +82,6 @@ class Renderer: NSObject {
         metalView.depthStencilPixelFormat = .depth32Float
         
         metalView.isOpaque = false
-        
-        
-        motionManager.startDeviceMotionUpdates(to: motionManagerQueue) { [weak self] data, error in
-            guard let self, Date().timeIntervalSince(lastUpdateMotion) > 0.02 else { return }
-            
-            lastUpdateMotion = .now
-            
-            if error != nil {
-                return
-            }
-            
-            if let trackMotion = data?.attitude {
-                motionManager.deviceMotionUpdateInterval = 0.02
-                Task { @MainActor [weak self] in
-                    let matrix = trackMotion.rotationMatrix
-                    self?.rotationMatrix = .init(
-                        [Float(matrix.m11), Float(matrix.m21), Float(matrix.m31), 0],
-                        [Float(matrix.m12), Float(matrix.m22), Float(matrix.m32), 0],
-                        [Float(matrix.m13), Float(matrix.m23), Float(matrix.m33), 0],
-                        [0, 0, 0, 1]
-                    )
-                }
-                
-                print("pitch = \(trackMotion.pitch), yaw = \(trackMotion.yaw), roll = \(trackMotion.roll)")
-            }
-        }
     }
 }
 
