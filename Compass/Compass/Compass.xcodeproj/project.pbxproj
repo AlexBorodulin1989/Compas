@@ -11,6 +11,7 @@
 		9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */ = {isa = PBXBuildFile; productRef = 9D36B01F2E1C0432004F73E2 /* RuntimeError */; };
 		9DD21B652E1D1F7600DA3501 /* MetalCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21B642E1D1F7600DA3501 /* MetalCamera */; };
 		9DD21B682E1D200300DA3501 /* MijickCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21B672E1D200300DA3501 /* MijickCamera */; };
+		9DF4CE092E291DC600AD79E3 /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 9DF4CE082E291DC600AD79E3 /* Model */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DF4CE092E291DC600AD79E3 /* Model in Frameworks */,
 				9DD21B682E1D200300DA3501 /* MijickCamera in Frameworks */,
 				9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */,
 				9DD21B652E1D1F7600DA3501 /* MetalCamera in Frameworks */,
@@ -80,6 +82,7 @@
 				9D36B01F2E1C0432004F73E2 /* RuntimeError */,
 				9DD21B642E1D1F7600DA3501 /* MetalCamera */,
 				9DD21B672E1D200300DA3501 /* MijickCamera */,
+				9DF4CE082E291DC600AD79E3 /* Model */,
 			);
 			productName = Compass;
 			productReference = 9D36AFC72E1BF396004F73E2 /* Compass.app */;
@@ -114,6 +117,7 @@
 				9D36B01E2E1C0432004F73E2 /* XCLocalSwiftPackageReference "LocalPackages/RuntimeError" */,
 				9DD21B632E1D1F7600DA3501 /* XCLocalSwiftPackageReference "LocalPackages/MetalCamera" */,
 				9DD21B662E1D200300DA3501 /* XCRemoteSwiftPackageReference "Camera" */,
+				9DF4CE072E291DC600AD79E3 /* XCLocalSwiftPackageReference "LocalPackages/Model" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D36AFC82E1BF396004F73E2 /* Products */;
@@ -367,6 +371,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/MetalCamera;
 		};
+		9DF4CE072E291DC600AD79E3 /* XCLocalSwiftPackageReference "LocalPackages/Model" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/Model;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -397,6 +405,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9DD21B662E1D200300DA3501 /* XCRemoteSwiftPackageReference "Camera" */;
 			productName = MijickCamera;
+		};
+		9DF4CE082E291DC600AD79E3 /* Model */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Model;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

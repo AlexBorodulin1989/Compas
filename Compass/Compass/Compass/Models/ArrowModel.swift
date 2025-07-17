@@ -9,6 +9,7 @@ import MathLibrary
 import ModelLoader
 import RuntimeError
 import MetalCamera
+import Model
 
 enum ArrowColor {
     case red

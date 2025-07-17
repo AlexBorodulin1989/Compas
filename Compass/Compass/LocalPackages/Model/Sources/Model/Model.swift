@@ -11,7 +11,7 @@ import RuntimeError
 import MathLibrary
 import simd
 
-protocol Model: AnyObject {
+public protocol Model: AnyObject {
     var vertexBuffer: MTLBuffer! { get set }
     var indexBuffer: MTLBuffer! { get set }
     var normalsBuffer: MTLBuffer! { get set }
@@ -23,7 +23,7 @@ protocol Model: AnyObject {
     func draw(renderEncoder: MTLRenderCommandEncoder)
 }
 
-extension Model {
+public extension Model {
     func initialize(device: MTLDevice, scale: Float = 1, preTransformations: float4x4 = .identity) async throws {
         guard let file = Bundle.main.url(forResource: name, withExtension: "obj")
         else {

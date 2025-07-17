@@ -33,6 +33,7 @@
 import MetalKit
 import MetalCamera
 import CoreMotion
+import Model
 
 // swiftlint:disable implicitly_unwrapped_optional
 
