@@ -18,7 +18,6 @@ public class ModelLoader {
     private var _vertices: [float3] = .init()
     private var _normals: [float3] = .init()
     private var _indices: [UInt16] = .init()
-    private var maxAbsVertexPosValue: Float = 0
     
     public init(fileUrl: URL) async {
         do {
@@ -29,16 +28,29 @@ public class ModelLoader {
             var rawNormals = [float3]()
             var rawNormalIndices = [UInt16]()
             
+            var maxAbsVertexPosValue: Double = 0
+            
+            lines.forEach { line in
+                let separateValues = line.split(separator: " ")
+                
+                if separateValues.first == "v" && separateValues.count == 4 {
+                    if let x = Double(separateValues[1]),
+                       let y = Double(separateValues[2]),
+                       let z = Double(separateValues[3]) {
+                        
+                        maxAbsVertexPosValue = max(max(max(abs(x), abs(y)), abs(z)), maxAbsVertexPosValue)
+                    }
+                }
+            }
+            
             lines.forEach { line in
                 let separateValues = line.split(separator: " ")
                 if separateValues.first == "v" && separateValues.count == 4 {
-                    if let x = Float(separateValues[1]),
-                       let y = Float(separateValues[2]),
-                       let z = Float(separateValues[3]) {
-                        let vertex = float3(x, y, -z)
-                        _vertices.append(vertex)
-                        
-                        maxAbsVertexPosValue = max(max(max(abs(x), abs(y)), abs(z)), maxAbsVertexPosValue)
+                    if let x = Double(separateValues[1]),
+                       let y = Double(separateValues[2]),
+                       let z = Double(separateValues[3]) {
+                        let vertex = double3(x, y, -z) / maxAbsVertexPosValue
+                        _vertices.append(.init(x: Float(vertex.x), y: Float(vertex.y), z: Float(vertex.z)))
                     }
                 } else if separateValues.first == "f" {
                     for i in 1...3 {
@@ -61,8 +73,6 @@ public class ModelLoader {
                 }
             }
             
-            normalizeVertexPos()
-            
             orderNormals(rawNormals: rawNormals, rawNormalIndices: rawNormalIndices)
         } catch {
             fatalError(error.localizedDescription)
@@ -72,11 +82,6 @@ public class ModelLoader {
 
 // Private functions
 extension ModelLoader {
-    private func normalizeVertexPos() {
-        let invMaxAbsVertexPosValue = 1 / maxAbsVertexPosValue
-        
-        _vertices = _vertices.map { $0 * invMaxAbsVertexPosValue }
-    }
     
     private func orderNormals(rawNormals: [float3], rawNormalIndices: [UInt16]) {
         let indicesCount = _indices.count
