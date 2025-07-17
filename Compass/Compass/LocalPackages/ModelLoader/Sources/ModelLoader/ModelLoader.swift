@@ -52,11 +52,11 @@ public class ModelLoader {
                         }
                     }
                 } else if separateValues.first == "vn" && separateValues.count == 4 {
-                    if let x = Float(separateValues[1]),
-                       let y = Float(separateValues[2]),
-                       let z = Float(separateValues[3]) {
-                        let normal = float3(x, y, -z)
-                        rawNormals.append(normal.normalized())
+                    if let x = Double(separateValues[1]),
+                       let y = Double(separateValues[2]),
+                       let z = Double(separateValues[3]) {
+                        let normal = double3(x, y, -z).normalized()
+                        rawNormals.append(float3(x: Float(normal.x), y: Float(normal.y), z: Float(normal.z)))
                     }
                 }
             }

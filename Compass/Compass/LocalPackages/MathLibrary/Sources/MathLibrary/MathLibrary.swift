@@ -314,3 +314,15 @@ public extension float3 {
         return sqrtf(x*x + y*y + z*z);
     }
 }
+
+// MARK: - double3
+public extension double3 {
+    func normalized() -> double3 {
+        let mag = self.magnitude()
+        return [x/mag, y/mag, z/mag]
+    }
+
+    func magnitude() -> Double {
+        return sqrt(x*x + y*y + z*z);
+    }
+}
