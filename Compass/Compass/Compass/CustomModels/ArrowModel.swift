@@ -9,7 +9,6 @@ import MathLibrary
 import ModelLoader
 import RuntimeError
 import MetalCamera
-import Model
 import CoreMotion
 
 enum ArrowColor {
@@ -17,16 +16,10 @@ enum ArrowColor {
     case blue
 }
 
-class ArrowModel: Model {
-    var vertexBuffer: MTLBuffer!
-    var normalsBuffer: MTLBuffer!
-    var indexBuffer: MTLBuffer!
-    
+class ArrowModel: CustomModel {
     let name = "direction_arrow"
     let camera: MetalCamera
     let xOffset: Float
-    
-    var indicesAmount = 0
     
     var pipelineState: MTLRenderPipelineState!
     
@@ -71,6 +64,8 @@ class ArrowModel: Model {
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
         let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
         
+        try await super.init(device: device, modelName: name, scale: scale, preTransformations: rotate)
+        
         if drawNormals {
             pipelineState = try await normalsPipelineState(device: device, colorPixelFormat: colorPixelFormat)
         } else {
@@ -81,8 +76,6 @@ class ArrowModel: Model {
                 pipelineState = try await bluePipelineState(device: device, colorPixelFormat: colorPixelFormat)
             }
         }
-        
-        try await initialize(device: device, scale: scale, preTransformations: rotate)
         
         motionManager.startDeviceMotionUpdates(to: motionManagerQueue) { [weak self] data, error in
             guard let self, Date().timeIntervalSince(lastUpdateMotion) > 0.02 else { return }
@@ -108,6 +101,10 @@ class ArrowModel: Model {
                 print("pitch = \(trackMotion.pitch), yaw = \(trackMotion.yaw), roll = \(trackMotion.roll)")
             }
         }
+    }
+    
+    required init(device: MTLDevice, modelName: String, scale: Float = 1, preTransformations: float4x4 = .identity) async throws {
+        fatalError("init(device:modelName:scale:preTransformations:) has not been implemented")
     }
     
     func bluePipelineState(device: MTLDevice,
@@ -175,7 +172,7 @@ class ArrowModel: Model {
         return try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
     }
     
-    func draw(renderEncoder: any MTLRenderCommandEncoder) {
+    override func draw(renderEncoder: any MTLRenderCommandEncoder) {
         renderEncoder.setRenderPipelineState(pipelineState)
         
         renderEncoder.setVertexBuffer(vertexBuffer,

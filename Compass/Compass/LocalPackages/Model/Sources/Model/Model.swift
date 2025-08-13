@@ -6,7 +6,6 @@
 //
 
 import Metal
-import ModelLoader
 import RuntimeError
 import MathLibrary
 import simd
@@ -16,27 +15,16 @@ public protocol Model: AnyObject {
     var indexBuffer: MTLBuffer! { get set }
     var normalsBuffer: MTLBuffer! { get set }
     
-    var indicesAmount: Int { get set }
-    
-    var name: String { get }
+    var indicesAmount: Int { get }
     
     func draw(renderEncoder: MTLRenderCommandEncoder)
 }
 
 public extension Model {
-    func initialize(device: MTLDevice, scale: Float = 1, preTransformations: float4x4 = .identity) async throws {
-        guard let file = Bundle.main.url(forResource: name, withExtension: "obj")
-        else {
-            fatalError("Could not find \(name) in main bundle.")
-        }
-        
-        let modelLoader = await ModelLoader(fileUrl: file)
-        
-        var vertices = modelLoader.vertices.map { preTransformations * float4($0 * scale, 1) }.map { float3(x: $0.x / $0.w, y: $0.y / $0.w, z: $0.z / $0.w) }
-        var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: preTransformations) * $0).normalized() }
-        var indices = modelLoader.indices
-        
-        indicesAmount = indices.count
+    func setupBuffers(device: MTLDevice,
+                      vertices: inout [float3],
+                      normals: inout [float3],
+                      indices: inout [UInt16]) async throws {
         
         guard let vertexBuffer = device.makeBuffer(bytes: &vertices,
                                                    length: MemoryLayout<float3>.stride * vertices.count)

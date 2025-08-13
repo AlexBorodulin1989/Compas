@@ -12,15 +12,10 @@ import RuntimeError
 import MetalCamera
 import Model
 
-class HeadModel: Model {
-    var vertexBuffer: MTLBuffer!
-    var normalsBuffer: MTLBuffer!
-    var indexBuffer: MTLBuffer!
+class HeadModel: CustomModel {
     
     let name = "african_head"
     let camera: MetalCamera
-    
-    var indicesAmount: Int = 0
     
     var pipelineState: MTLRenderPipelineState!
     private let drawNormals: Bool
@@ -70,13 +65,17 @@ class HeadModel: Model {
         self.camera = camera
         self.drawNormals = drawNormals
         
+        try await super.init(device: device, modelName: name, scale: scale)
+        
         if drawNormals {
             pipelineState = try await normalsPipelineState(device: device, colorPixelFormat: colorPixelFormat)
         } else {
             pipelineState = try await bluePipelineState(device: device, colorPixelFormat: colorPixelFormat)
         }
-        
-        try await initialize(device: device, scale: scale)
+    }
+    
+    required init(device: MTLDevice, modelName: String, scale: Float = 1, preTransformations: float4x4 = .identity) async throws {
+        fatalError("init(device:modelName:scale:preTransformations:) has not been implemented")
     }
     
     func bluePipelineState(device: MTLDevice,
@@ -122,7 +121,7 @@ class HeadModel: Model {
         return try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
     }
     
-    func draw(renderEncoder: any MTLRenderCommandEncoder) {
+    override func draw(renderEncoder: any MTLRenderCommandEncoder) {
         renderEncoder.setRenderPipelineState(pipelineState)
         
         time += 0.001
