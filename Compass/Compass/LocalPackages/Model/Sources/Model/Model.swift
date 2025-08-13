@@ -32,21 +32,21 @@ public extension Model {
         
         let modelLoader = await ModelLoader(fileUrl: file)
         
-        var vertices = modelLoader.vertices.map { preTransformations * float4($0 * scale, 1) }
-        var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: preTransformations) * $0).normalized() }.map { float4($0, 1) }
+        var vertices = modelLoader.vertices.map { preTransformations * float4($0 * scale, 1) }.map { float3(x: $0.x / $0.w, y: $0.y / $0.w, z: $0.z / $0.w) }
+        var normals = modelLoader.normals.map { (float3x3(normalFrom4x4: preTransformations) * $0).normalized() }
         var indices = modelLoader.indices
         
         indicesAmount = indices.count
         
         guard let vertexBuffer = device.makeBuffer(bytes: &vertices,
-                                                   length: MemoryLayout<float4>.stride * vertices.count)
+                                                   length: MemoryLayout<float3>.stride * vertices.count)
         else {
             throw RuntimeError("Cannot create vertex buffer in file \(#file)")
         }
         self.vertexBuffer = vertexBuffer
         
         guard let normalsBuffer = device.makeBuffer(bytes: &normals,
-                                                   length: MemoryLayout<float4>.stride * normals.count)
+                                                   length: MemoryLayout<float3>.stride * normals.count)
         else {
             throw RuntimeError("Cannot create vertex buffer in file \(#file)")
         }

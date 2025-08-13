@@ -45,54 +45,54 @@ struct MetalView: View {
             MetalViewRepresentable(renderer: renderer,
                                    metalView: $metalView)
             .task {
-                let headModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
-                                                     camera: camera,
-                                                     colorPixelFormat:
-                                                        metalView.colorPixelFormat,
-                                                     scale: 1.0)
-                
-                let headNormalModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
-                                                           camera: camera,
-                                                           colorPixelFormat:
-                                                            metalView.colorPixelFormat,
-                                                           scale: 1.0,
-                                                           drawNormals: true)
-                
-                if let headModel, let headNormalModel {
-                    renderer = Renderer(metalView: metalView,
-                                        device: GPUDevice.instance.mtlDevice,
-                                        models: [headModel, headNormalModel],
-                                        camera: camera)
-                }
-                
-//                let blueArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+//                let headModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
+//                                                     camera: camera,
+//                                                     colorPixelFormat:
+//                                                        metalView.colorPixelFormat,
+//                                                     scale: 1.0)
+//                
+//                let headNormalModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
 //                                                           camera: camera,
-//                                                           colorPixelFormat: metalView.colorPixelFormat,
-//                                                           scale: 0.2,
-//                                                           xOffset: 0.2,
-//                                                           arrowColor: .blue)
+//                                                           colorPixelFormat:
+//                                                            metalView.colorPixelFormat,
+//                                                           scale: 1.0,
+//                                                           drawNormals: true)
 //                
-//                let blueArrowNormalsModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-//                                                                  camera: camera,
-//                                                                  colorPixelFormat: metalView.colorPixelFormat,
-//                                                                  scale: 0.2,
-//                                                                  xOffset: 0.2,
-//                                                                  arrowColor: .blue,
-//                                                                  drawNormals: true)
-//                
-//                let redArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-//                                                          camera: camera,
-//                                                          colorPixelFormat: metalView.colorPixelFormat,
-//                                                          scale: 0.2,
-//                                                          xOffset: -0.2,
-//                                                          arrowColor: .red)
-//                
-//                if let blueArrowModel, let blueArrowNormalsModel, let redArrowModel {
+//                if let headModel, let headNormalModel {
 //                    renderer = Renderer(metalView: metalView,
 //                                        device: GPUDevice.instance.mtlDevice,
-//                                        models: [blueArrowModel, blueArrowNormalsModel, redArrowModel],
+//                                        models: [headModel, headNormalModel],
 //                                        camera: camera)
 //                }
+                
+                let blueArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+                                                           camera: camera,
+                                                           colorPixelFormat: metalView.colorPixelFormat,
+                                                           scale: 0.2,
+                                                           xOffset: 0.2,
+                                                           arrowColor: .blue)
+                
+                let blueArrowNormalsModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+                                                                  camera: camera,
+                                                                  colorPixelFormat: metalView.colorPixelFormat,
+                                                                  scale: 0.2,
+                                                                  xOffset: 0.2,
+                                                                  arrowColor: .blue,
+                                                                  drawNormals: true)
+                
+                let redArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+                                                          camera: camera,
+                                                          colorPixelFormat: metalView.colorPixelFormat,
+                                                          scale: 0.2,
+                                                          xOffset: -0.2,
+                                                          arrowColor: .red)
+                
+                if let blueArrowModel, let blueArrowNormalsModel, let redArrowModel {
+                    renderer = Renderer(metalView: metalView,
+                                        device: GPUDevice.instance.mtlDevice,
+                                        models: [blueArrowModel, blueArrowNormalsModel, redArrowModel],
+                                        camera: camera)
+                }
             }
         }
     }

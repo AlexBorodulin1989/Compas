@@ -8,8 +8,8 @@
 #include <metal_stdlib>
 using namespace metal;
 
-vertex float4 normal_vertex_main(constant float4 *positions [[ buffer(0) ]],
-                                 constant float4 *normals [[ buffer(1) ]],
+vertex float4 normal_vertex_main(constant float3 *positions [[ buffer(0) ]],
+                                 constant float3 *normals [[ buffer(1) ]],
                                  constant ushort *indices [[ buffer(2) ]],
                                  constant float4x4 &projection [[ buffer(10) ]],
                                  constant float4x4 &model [[ buffer(11) ]],
@@ -17,10 +17,10 @@ vertex float4 normal_vertex_main(constant float4 *positions [[ buffer(0) ]],
                                  uint vertexID [[ vertex_id ]]) {
     auto index = vertexID / 2;
     auto vertexIndex = indices[index];
-    float4 position = model * positions[vertexIndex];
+    float4 position = model * float4(positions[vertexIndex], 1);
     if (index * 2 != vertexID) {
-        float4 normal = normals[vertexIndex];
-        auto norm = normMatrix * normalize(normal.xyz);
+        float3 normal = normals[vertexIndex];
+        auto norm = normMatrix * normalize(normal);
         position = float4(norm * 0.02 + position.xyz, 1);
     }
     

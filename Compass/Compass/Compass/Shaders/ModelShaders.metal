@@ -34,8 +34,8 @@
 using namespace metal;
 
 struct VertexInput {
-    float4 pos [[attribute(0)]];
-    float4 norm [[attribute(1)]];
+    float3 pos [[attribute(0)]];
+    float3 norm [[attribute(1)]];
 };
 
 struct FragmentInput {
@@ -47,10 +47,10 @@ vertex FragmentInput vertex_main(VertexInput vert [[stage_in]],
                                  constant float4x4 &viewMatrix [[ buffer(10) ]],
                                  constant float3x3 &normProjection [[ buffer(11) ]]) {
     auto sunDir = normProjection * float3(0., 0., -1.);
-    auto normal = normProjection * normalize(vert.norm.xyz);
+    auto normal = normProjection * normalize(vert.norm);
     auto diffKoef = max(dot(normal, sunDir), 0.0);
     
-    auto pos = viewMatrix * vert.pos;
+    auto pos = viewMatrix * float4(vert.pos, 1);
     
     auto fragInpit = FragmentInput {
         .pos = pos,
