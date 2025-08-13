@@ -48,8 +48,6 @@ extension CustomModel {
             fatalError("Could not find \(modelName) in main bundle.")
         }
         
-        let modelLoader = await ModelLoader(fileUrl: file)
-        
         return await ModelLoader(fileUrl: file)
     }
 }
