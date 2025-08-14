@@ -35,65 +35,13 @@ import MetalKit
 import MetalCamera
 
 struct MetalView: View {
-    @State private var renderer: Renderer?
-    @State private var metalView = MTKView()
-    
-    let camera = MetalCamera()
+    @Binding var mtkView: MTKView
+    @Binding var renderer: Renderer?
     
     var body: some View {
         VStack {
             MetalViewRepresentable(renderer: renderer,
-                                   metalView: $metalView)
-            .task {
-                let headModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
-                                                     camera: camera,
-                                                     colorPixelFormat:
-                                                        metalView.colorPixelFormat,
-                                                     scale: 1.0)
-                
-                let headNormalModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
-                                                           camera: camera,
-                                                           colorPixelFormat:
-                                                            metalView.colorPixelFormat,
-                                                           scale: 1.0,
-                                                           drawNormals: true)
-                
-                if let headModel, let headNormalModel {
-                    renderer = Renderer(metalView: metalView,
-                                        device: GPUDevice.instance.mtlDevice,
-                                        models: [headModel, headNormalModel],
-                                        camera: camera)
-                }
-                
-//                let blueArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-//                                                           camera: camera,
-//                                                           colorPixelFormat: metalView.colorPixelFormat,
-//                                                           scale: 0.2,
-//                                                           xOffset: 0.2,
-//                                                           arrowColor: .blue)
-//                
-//                let blueArrowNormalsModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-//                                                                  camera: camera,
-//                                                                  colorPixelFormat: metalView.colorPixelFormat,
-//                                                                  scale: 0.2,
-//                                                                  xOffset: 0.2,
-//                                                                  arrowColor: .blue,
-//                                                                  drawNormals: true)
-//                
-//                let redArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-//                                                          camera: camera,
-//                                                          colorPixelFormat: metalView.colorPixelFormat,
-//                                                          scale: 0.2,
-//                                                          xOffset: -0.2,
-//                                                          arrowColor: .red)
-//                
-//                if let blueArrowModel, let blueArrowNormalsModel, let redArrowModel {
-//                    renderer = Renderer(metalView: metalView,
-//                                        device: GPUDevice.instance.mtlDevice,
-//                                        models: [blueArrowModel, blueArrowNormalsModel, redArrowModel],
-//                                        camera: camera)
-//                }
-            }
+                                   metalView: $mtkView)
         }
     }
 }
@@ -136,8 +84,14 @@ struct MetalViewRepresentable: ViewRepresentable {
 
 struct MetalView_Previews: PreviewProvider {
     static var previews: some View {
+        let mtkView: MTKView = .init()
+        let camera = MetalCamera()
         VStack {
-            MetalView()
+            MetalView(mtkView: .constant(mtkView),
+                      renderer: .constant(.init(metalView: mtkView,
+                                                device: GPUDevice.instance.mtlDevice,
+                                                models: [],
+                                                camera: camera)))
             Text("Metal View")
         }
     }
