@@ -33,12 +33,20 @@
 import SwiftUI
 import MetalKit
 import MetalCamera
+import Renderer
+import GPUDevice
 
-struct MetalView: View {
+public struct MetalView: View {
     @Binding var mtkView: MTKView
     @Binding var renderer: Renderer?
     
-    var body: some View {
+    public init(mtkView: Binding<MTKView>,
+                renderer: Binding<Renderer?> = .constant(nil)) {
+        _mtkView = mtkView
+        _renderer = renderer
+    }
+    
+    public var body: some View {
         VStack {
             MetalViewRepresentable(renderer: renderer,
                                    metalView: $mtkView)

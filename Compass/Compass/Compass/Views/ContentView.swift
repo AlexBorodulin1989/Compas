@@ -9,6 +9,9 @@ import SwiftUI
 import MijickCamera
 import MetalCamera
 import MetalKit
+import Renderer
+import MetalView
+import GPUDevice
 
 struct ContentView: View {
     @State private var mtkView = MTKView()

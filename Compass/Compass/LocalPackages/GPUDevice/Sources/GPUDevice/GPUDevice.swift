@@ -7,10 +7,11 @@
 
 import Metal
 
-class GPUDevice {
-    static let instance: GPUDevice = .init()
+@MainActor
+public class GPUDevice {
+    public static let instance: GPUDevice = .init()
     
-    let mtlDevice: MTLDevice
+    public let mtlDevice: MTLDevice
     
     private init() {
         guard
