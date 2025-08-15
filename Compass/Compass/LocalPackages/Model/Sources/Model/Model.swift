@@ -33,12 +33,14 @@ public extension Model {
         }
         self.vertexBuffer = vertexBuffer
         
-        guard let normalsBuffer = device.makeBuffer(bytes: &normals,
-                                                   length: MemoryLayout<float3>.stride * normals.count)
-        else {
-            throw RuntimeError("Cannot create vertex buffer in file \(#file)")
+        if !normals.isEmpty {
+            guard let normalsBuffer = device.makeBuffer(bytes: &normals,
+                                                       length: MemoryLayout<float3>.stride * normals.count)
+            else {
+                throw RuntimeError("Cannot create vertex buffer in file \(#file)")
+            }
+            self.normalsBuffer = normalsBuffer
         }
-        self.normalsBuffer = normalsBuffer
         
         guard let indexBuffer = device.makeBuffer(bytes: &indices,
                                                   length: MemoryLayout<UInt16>.stride * indices.count)
