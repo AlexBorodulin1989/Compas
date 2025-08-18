@@ -7,9 +7,15 @@
 import Model
 import MetalKit
 import MathLibrary
+import MetalCamera
 
 class DebugCube: Model {
-    let indicesAmount = 12
+    
+    let camera: MetalCamera
+    
+    var pipelineState: MTLRenderPipelineState!
+    
+    let indicesAmount = 24
     
     var vertexBuffer: MTLBuffer!
     var normalsBuffer: MTLBuffer!
@@ -26,7 +32,7 @@ class DebugCube: Model {
         [-1, -1, 1]
     ]
     
-    var indices: [UInt16] = [
+    var cubeIndices: [UInt16] = [
         0, 1,
         1, 2,
         2, 3,
@@ -34,13 +40,28 @@ class DebugCube: Model {
         4, 5,
         5, 6,
         6, 7,
-        7, 0,
+        7, 4,
         0, 4,
         1, 5,
         2, 6,
         3, 7
     ]
     
+    private var time: Float = 0
+    
+    init(device: MTLDevice,
+         camera: MetalCamera,
+         colorPixelFormat: MTLPixelFormat) async throws {
+        self.camera = camera
+        pipelineState = try await pipelineState(device: device, colorPixelFormat: colorPixelFormat)
+        
+        var cubeNormals: [float3] = []
+        
+        try await setupBuffers(device: device, vertices: &cubeVertices, normals: &cubeNormals, indices: &cubeIndices)
+    }
+}
+
+extension DebugCube {
     func pipelineState(device: MTLDevice,
                        colorPixelFormat: MTLPixelFormat) async throws -> MTLRenderPipelineState {
         guard let library = device.makeDefaultLibrary()
@@ -56,6 +77,7 @@ class DebugCube: Model {
         pipelineDescriptor.vertexFunction = vertexFunction
         pipelineDescriptor.fragmentFunction = fragmentFunction
         pipelineDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
+        pipelineDescriptor.vertexDescriptor = vertexDescriptor
         pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
         
         return try await device.makeRenderPipelineState(descriptor: pipelineDescriptor)
@@ -71,18 +93,32 @@ extension DebugCube {
         
         vertexDescriptor.layouts[0].stride = MemoryLayout<float3>.stride
         
-        vertexDescriptor.attributes[1].format = .float3
-        vertexDescriptor.attributes[1].offset = 0
-        vertexDescriptor.attributes[1].bufferIndex = 1
-        
-        vertexDescriptor.layouts[1].stride = MemoryLayout<float3>.stride
-        
         return vertexDescriptor
     }
 }
 
 extension DebugCube {
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        time += 0.001
         
+        renderEncoder.setRenderPipelineState(pipelineState)
+        
+        renderEncoder.setVertexBuffer(vertexBuffer,
+                                      offset: 0,
+                                      index: 0)
+        
+        print(time)
+        let model = float4x4(translation: .init(x: 0, y: 0, z: 0.57)) * float4x4(scaling: 0.2)
+        var transformMatrix = camera.projMatrix * model
+        
+        renderEncoder.setVertexBytes(&transformMatrix,
+                                     length: MemoryLayout<float4x4>.stride,
+                                     index: 10)
+        
+        renderEncoder.drawIndexedPrimitives(type: .line,
+                                            indexCount: indicesAmount,
+                                            indexType: .uint16,
+                                            indexBuffer: indexBuffer,
+                                            indexBufferOffset: 0)
     }
 }
