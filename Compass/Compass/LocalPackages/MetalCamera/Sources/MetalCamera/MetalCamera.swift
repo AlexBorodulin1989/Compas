@@ -4,7 +4,7 @@ import MathLibrary
 
 public final class MetalCamera: @unchecked Sendable {
     private let far: Float = 1
-    private let near: Float = 0.1
+    private let near: Float = 0.000005
     private var _projMatrix: float4x4 = .identity
     
     public var projMatrix: float4x4 { _projMatrix }
@@ -24,15 +24,15 @@ public final class MetalCamera: @unchecked Sendable {
             _projMatrix = float4x4([
                 float4(halfFovyCtg, 0,                       0, 0),
                 float4(0,           halfFovyCtg/aspectRatio, 0, 0),
-                float4(0,           0,                       0, 1),
-                float4(0,           0,                       near, 0)
+                float4(0,           0,                       1 - a, 1),
+                float4(0,           0,                       -b, 0)
             ])
         } else {
             _projMatrix = float4x4([
                 float4(halfFovyCtg * aspectRatio, 0,           0, 0),
                 float4(0,                         halfFovyCtg, 0, 0),
-                float4(0,                         0,           0, 1),
-                float4(0,                         0,           near, 0)
+                float4(0,                         0,           1 - a, 1),
+                float4(0,                         0,           -b, 0)
             ])
         }
     }
