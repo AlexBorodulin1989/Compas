@@ -80,6 +80,8 @@ extension Renderer: MTKViewDelegate {
         
         descriptor.colorAttachments[0].loadAction = .clear
         descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
+        descriptor.depthAttachment.loadAction = .clear
+        descriptor.depthAttachment.clearDepth = 0
         
         guard let renderEncoder =
                 commandBuffer.makeRenderCommandEncoder(

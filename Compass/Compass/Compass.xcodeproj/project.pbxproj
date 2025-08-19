@@ -12,6 +12,7 @@
 		9D4A4F9A2E4DCEB7002A230A /* MetalView in Frameworks */ = {isa = PBXBuildFile; productRef = 9D4A4F992E4DCEB7002A230A /* MetalView */; };
 		9D4A4FC72E4DD57F002A230A /* GPUDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 9D4A4FC62E4DD57F002A230A /* GPUDevice */; };
 		9D4A501A2E4DF371002A230A /* Renderer in Frameworks */ = {isa = PBXBuildFile; productRef = 9D4A50192E4DF371002A230A /* Renderer */; };
+		9D92FF072E545FA200207037 /* Constants in Frameworks */ = {isa = PBXBuildFile; productRef = 9D92FF062E545FA200207037 /* Constants */; };
 		9DD21B652E1D1F7600DA3501 /* MetalCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21B642E1D1F7600DA3501 /* MetalCamera */; };
 		9DD21B682E1D200300DA3501 /* MijickCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 9DD21B672E1D200300DA3501 /* MijickCamera */; };
 		9DF4CE092E291DC600AD79E3 /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 9DF4CE082E291DC600AD79E3 /* Model */; };
@@ -41,6 +42,7 @@
 				9D36B0202E1C0432004F73E2 /* RuntimeError in Frameworks */,
 				9DD21B652E1D1F7600DA3501 /* MetalCamera in Frameworks */,
 				9D36AFDA2E1BF3FE004F73E2 /* ModelLoader in Frameworks */,
+				9D92FF072E545FA200207037 /* Constants in Frameworks */,
 				9D4A501A2E4DF371002A230A /* Renderer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +94,7 @@
 				9D4A4F992E4DCEB7002A230A /* MetalView */,
 				9D4A4FC62E4DD57F002A230A /* GPUDevice */,
 				9D4A50192E4DF371002A230A /* Renderer */,
+				9D92FF062E545FA200207037 /* Constants */,
 			);
 			productName = Compass;
 			productReference = 9D36AFC72E1BF396004F73E2 /* Compass.app */;
@@ -130,6 +133,7 @@
 				9D4A4F982E4DCEB7002A230A /* XCLocalSwiftPackageReference "LocalPackages/MetalView" */,
 				9D4A4FC52E4DD57F002A230A /* XCLocalSwiftPackageReference "LocalPackages/GPUDevice" */,
 				9D4A50182E4DF371002A230A /* XCLocalSwiftPackageReference "LocalPackages/Renderer" */,
+				9D92FF052E545FA200207037 /* XCLocalSwiftPackageReference "LocalPackages/Constants" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D36AFC82E1BF396004F73E2 /* Products */;
@@ -391,6 +395,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/Renderer;
 		};
+		9D92FF052E545FA200207037 /* XCLocalSwiftPackageReference "LocalPackages/Constants" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/Constants;
+		};
 		9DD21B632E1D1F7600DA3501 /* XCLocalSwiftPackageReference "LocalPackages/MetalCamera" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/MetalCamera;
@@ -432,6 +440,10 @@
 		9D4A50192E4DF371002A230A /* Renderer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Renderer;
+		};
+		9D92FF062E545FA200207037 /* Constants */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Constants;
 		};
 		9DD21B642E1D1F7600DA3501 /* MetalCamera */ = {
 			isa = XCSwiftPackageProductDependency;

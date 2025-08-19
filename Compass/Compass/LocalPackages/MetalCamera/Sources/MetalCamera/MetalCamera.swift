@@ -18,21 +18,21 @@ public final class MetalCamera: @unchecked Sendable {
         
         let interval = far - near
         let a = far / interval
-        let b = -far * near / interval
+        let b = -near * a
         
         if aspectRatio > 1 { // width > height
             _projMatrix = float4x4([
                 float4(halfFovyCtg, 0,                       0, 0),
                 float4(0,           halfFovyCtg/aspectRatio, 0, 0),
-                float4(0,           0,                       a, 1),
-                float4(0,           0,                       b, 0)
+                float4(0,           0,                       0, 1),
+                float4(0,           0,                       near, 0)
             ])
         } else {
             _projMatrix = float4x4([
                 float4(halfFovyCtg * aspectRatio, 0,           0, 0),
                 float4(0,                         halfFovyCtg, 0, 0),
-                float4(0,                         0,           a, 1),
-                float4(0,                         0,           b, 0)
+                float4(0,                         0,           0, 1),
+                float4(0,                         0,           near, 0)
             ])
         }
     }

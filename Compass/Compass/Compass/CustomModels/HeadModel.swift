@@ -22,6 +22,8 @@ class HeadModel: CustomModel {
     
     private var time: Float = 0
     
+    var depthStencilState: MTLDepthStencilState!
+    
     var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float3
@@ -72,6 +74,13 @@ class HeadModel: CustomModel {
         } else {
             pipelineState = try await bluePipelineState(device: device, colorPixelFormat: colorPixelFormat)
         }
+        
+        // Create a depth stencil descriptor
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .greater
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        
+        depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
     }
     
     required init(device: MTLDevice, modelName: String, scale: Float = 1, preTransformations: float4x4 = .identity) async throws {
@@ -125,6 +134,9 @@ class HeadModel: CustomModel {
         renderEncoder.setRenderPipelineState(pipelineState)
         
         time += 0.001
+
+        // Set the depth stencil state on the render command encoder
+        renderEncoder.setDepthStencilState(depthStencilState)
         
         renderEncoder.setVertexBuffer(vertexBuffer,
                                       offset: 0,
