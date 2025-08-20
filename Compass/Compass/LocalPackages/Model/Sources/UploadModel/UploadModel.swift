@@ -10,7 +10,7 @@ import GeneralModel
 import ModelLoader
 import MathLibrary
 
-public class UploadModel: GeneralModel {
+open class UploadModel: GeneralModel {
     public let indicesAmount: Int
     
     public var depthStencilState: MTLDepthStencilState!

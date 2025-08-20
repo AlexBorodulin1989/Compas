@@ -30,6 +30,13 @@ public class ModelLoader {
             
             var maxAbsVertexPosValue: Double = 0
             
+            var maxX = -Double.greatestFiniteMagnitude
+            var minX = Double.greatestFiniteMagnitude
+            var maxY = -Double.greatestFiniteMagnitude
+            var minY = Double.greatestFiniteMagnitude
+            var maxZ = -Double.greatestFiniteMagnitude
+            var minZ = Double.greatestFiniteMagnitude
+            
             lines.forEach { line in
                 let separateValues = line.split(separator: " ")
                 
@@ -38,7 +45,45 @@ public class ModelLoader {
                        let y = Double(separateValues[2]),
                        let z = Double(separateValues[3]) {
                         
-                        maxAbsVertexPosValue = max(max(max(abs(x), abs(y)), abs(z)), maxAbsVertexPosValue)
+                        if x > maxX {
+                            maxX = x
+                        }
+                        
+                        if x < minX {
+                            minX = x
+                        }
+                        
+                        if y > maxY {
+                            maxY = y
+                        }
+                        
+                        if y < minY {
+                            minY = y
+                        }
+                        
+                        if z > maxZ {
+                            maxZ = z
+                        }
+                        
+                        if z < minZ {
+                            minZ = z
+                        }
+                    }
+                }
+            }
+            
+            let xOffset = -(minX + maxX) * 0.5
+            let yOffset = -(minY + maxY) * 0.5
+            let zOffset = -(minZ + maxZ) * 0.5
+            
+            lines.forEach { line in
+                let separateValues = line.split(separator: " ")
+                
+                if separateValues.first == "v" && separateValues.count == 4 {
+                    if let x = Double(separateValues[1]),
+                       let y = Double(separateValues[2]),
+                       let z = Double(separateValues[3]) {
+                        maxAbsVertexPosValue = max(max(max(abs(x + xOffset), abs(y + yOffset)), abs(z + zOffset)), maxAbsVertexPosValue)
                     }
                 }
             }
@@ -49,7 +94,7 @@ public class ModelLoader {
                     if let x = Double(separateValues[1]),
                        let y = Double(separateValues[2]),
                        let z = Double(separateValues[3]) {
-                        let vertex = double3(x, y, -z) / maxAbsVertexPosValue
+                        let vertex = double3(x + xOffset, y + yOffset, -(z + zOffset)) / maxAbsVertexPosValue
                         _vertices.append(.init(x: Float(vertex.x), y: Float(vertex.y), z: Float(vertex.z)))
                     }
                 } else if separateValues.first == "f" {

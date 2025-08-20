@@ -11,6 +11,7 @@ import MathLibrary
 import ModelLoader
 import RuntimeError
 import MetalCamera
+import Constants
 
 class HeadModel: UploadModel {
     
@@ -120,7 +121,7 @@ class HeadModel: UploadModel {
                                       offset: 0,
                                       index: 1)
         
-        var model = float4x4(translation: .init(x: 0, y: 0, z: 1.1)) * float4x4(rotationY: time)
+        var model = float4x4(translation: .init(x: 0, y: 0, z: 3 * Constants.unitValue)) * float4x4(scaling: Constants.unitValue)
         
         if drawNormals {
             var projMatrix = camera.projMatrix
