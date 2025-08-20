@@ -16,7 +16,7 @@ enum ArrowColor {
     case blue
 }
 
-class ArrowModel: CustomModel {
+class ArrowModel: UploadModel {
     let name = "direction_arrow"
     let camera: MetalCamera
     let xOffset: Float

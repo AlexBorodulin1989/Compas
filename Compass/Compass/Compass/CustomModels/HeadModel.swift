@@ -12,7 +12,7 @@ import RuntimeError
 import MetalCamera
 import Model
 
-class HeadModel: CustomModel {
+class HeadModel: UploadModel {
     
     let name = "african_head"
     let camera: MetalCamera

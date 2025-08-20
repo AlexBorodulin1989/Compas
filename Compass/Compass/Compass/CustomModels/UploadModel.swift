@@ -10,7 +10,7 @@ import Model
 import ModelLoader
 import MathLibrary
 
-class CustomModel: Model {
+class UploadModel: Model {
     let indicesAmount: Int
     
     var depthStencilState: MTLDepthStencilState!
@@ -44,7 +44,7 @@ class CustomModel: Model {
     func draw(renderEncoder: any MTLRenderCommandEncoder) {}
 }
 
-extension CustomModel {
+extension UploadModel {
     static func loadModel(device: MTLDevice, modelName: String, scale: Float, preTransformations: float4x4) async -> ModelLoader {
         guard let file = Bundle.main.url(forResource: modelName, withExtension: defaultModelExtension)
         else {
