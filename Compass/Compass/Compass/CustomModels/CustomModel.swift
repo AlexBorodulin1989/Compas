@@ -13,6 +13,8 @@ import MathLibrary
 class CustomModel: Model {
     let indicesAmount: Int
     
+    var depthStencilState: MTLDepthStencilState!
+    
     var vertexBuffer: MTLBuffer!
     var normalsBuffer: MTLBuffer!
     var indexBuffer: MTLBuffer!
@@ -35,6 +37,7 @@ class CustomModel: Model {
         
         indicesAmount = indices.count
         
+        setupDepthStencil(device: device)
         try await setupBuffers(device: device, vertices: &vertices, normals: &normals, indices: &indices)
     }
     

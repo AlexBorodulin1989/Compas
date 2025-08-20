@@ -173,6 +173,9 @@ class ArrowModel: CustomModel {
     }
     
     override func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        // Set the depth stencil state on the render command encoder
+        renderEncoder.setDepthStencilState(depthStencilState)
+        
         renderEncoder.setRenderPipelineState(pipelineState)
         
         renderEncoder.setVertexBuffer(vertexBuffer,

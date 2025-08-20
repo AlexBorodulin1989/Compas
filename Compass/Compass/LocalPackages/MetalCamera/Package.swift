@@ -13,7 +13,8 @@ let package = Package(
             targets: ["MetalCamera"]),
     ],
     dependencies: [
-        .package(path: "../MathLibrary")
+        .package(path: "../MathLibrary"),
+        .package(path: "../Constants")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -22,6 +23,7 @@ let package = Package(
             name: "MetalCamera",
             dependencies: [
                 .product(name: "MathLibrary", package: "MathLibrary"),
+                .product(name: "Constants", package: "Constants"),
             ]),
 
     ]

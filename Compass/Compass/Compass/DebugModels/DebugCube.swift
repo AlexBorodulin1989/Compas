@@ -17,6 +17,8 @@ class DebugCube: Model {
     
     let indicesAmount = 24
     
+    var depthStencilState: MTLDepthStencilState!
+    
     var vertexBuffer: MTLBuffer!
     var normalsBuffer: MTLBuffer!
     var indexBuffer: MTLBuffer!
@@ -47,8 +49,6 @@ class DebugCube: Model {
         3, 7
     ]
     
-    private var time: Float = 0
-    
     init(device: MTLDevice,
          camera: MetalCamera,
          colorPixelFormat: MTLPixelFormat) async throws {
@@ -57,6 +57,7 @@ class DebugCube: Model {
         
         var cubeNormals: [float3] = []
         
+        setupDepthStencil(device: device)
         try await setupBuffers(device: device, vertices: &cubeVertices, normals: &cubeNormals, indices: &cubeIndices)
     }
 }
@@ -99,7 +100,7 @@ extension DebugCube {
 
 extension DebugCube {
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
-        time += 0.001
+        renderEncoder.setDepthStencilState(depthStencilState)
         
         renderEncoder.setRenderPipelineState(pipelineState)
         
@@ -107,7 +108,6 @@ extension DebugCube {
                                       offset: 0,
                                       index: 0)
         
-        print(time)
         let model = float4x4(translation: .init(x: 0, y: 0, z: 0.57)) * float4x4(scaling: 0.2)
         var transformMatrix = camera.projMatrix * model
         

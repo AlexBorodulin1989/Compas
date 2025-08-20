@@ -1,10 +1,11 @@
 import simd
 import CoreFoundation
 import MathLibrary
+import Constants
 
 public final class MetalCamera: @unchecked Sendable {
     private let far: Float = 1
-    private let near: Float = 0.000005
+    private let near: Float = 0.00005 * Constants.unitValue
     private var _projMatrix: float4x4 = .identity
     
     public var projMatrix: float4x4 { _projMatrix }

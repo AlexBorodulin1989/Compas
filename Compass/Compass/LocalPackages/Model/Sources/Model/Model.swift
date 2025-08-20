@@ -11,6 +11,8 @@ import MathLibrary
 import simd
 
 public protocol Model: AnyObject {
+    var depthStencilState: MTLDepthStencilState! { get set }
+    
     var vertexBuffer: MTLBuffer! { get set }
     var indexBuffer: MTLBuffer! { get set }
     var normalsBuffer: MTLBuffer! { get set }
@@ -18,6 +20,17 @@ public protocol Model: AnyObject {
     var indicesAmount: Int { get }
     
     func draw(renderEncoder: MTLRenderCommandEncoder)
+}
+
+public extension Model {
+    func setupDepthStencil(device: MTLDevice) {
+        // Create a depth stencil descriptor
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .greater
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        
+        depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+    }
 }
 
 public extension Model {
