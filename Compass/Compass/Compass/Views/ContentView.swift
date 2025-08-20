@@ -44,7 +44,7 @@ struct ContentView: View {
             if let headModel, let headNormalModel, let cube {
                 renderer = Renderer(metalView: mtkView,
                                     device: GPUDevice.instance.mtlDevice,
-                                    models: [cube, headModel, headNormalModel],
+                                    models: [cube/*, headModel, headNormalModel*/],
                                     camera: camera)
             }
             

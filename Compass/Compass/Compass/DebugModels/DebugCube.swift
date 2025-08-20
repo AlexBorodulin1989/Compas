@@ -8,6 +8,7 @@ import Model
 import MetalKit
 import MathLibrary
 import MetalCamera
+import Constants
 
 class DebugCube: Model {
     
@@ -108,7 +109,7 @@ extension DebugCube {
                                       offset: 0,
                                       index: 0)
         
-        let model = float4x4(translation: .init(x: 0, y: 0, z: 0.57)) * float4x4(scaling: 0.2)
+        let model = float4x4(translation: .init(x: 0, y: 0, z: 3 * Constants.unitValue)) * float4x4(scaling: Constants.unitValue)
         var transformMatrix = camera.projMatrix * model
         
         renderEncoder.setVertexBytes(&transformMatrix,
