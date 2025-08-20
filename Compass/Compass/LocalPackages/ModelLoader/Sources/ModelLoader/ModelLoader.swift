@@ -88,6 +88,13 @@ public class ModelLoader {
                 }
             }
             
+            maxX = -Double.greatestFiniteMagnitude
+            minX = Double.greatestFiniteMagnitude
+            maxY = -Double.greatestFiniteMagnitude
+            minY = Double.greatestFiniteMagnitude
+            maxZ = -Double.greatestFiniteMagnitude
+            minZ = Double.greatestFiniteMagnitude
+            
             lines.forEach { line in
                 let separateValues = line.split(separator: " ")
                 if separateValues.first == "v" && separateValues.count == 4 {
@@ -96,6 +103,30 @@ public class ModelLoader {
                        let z = Double(separateValues[3]) {
                         let vertex = double3(x + xOffset, y + yOffset, -(z + zOffset)) / maxAbsVertexPosValue
                         _vertices.append(.init(x: Float(vertex.x), y: Float(vertex.y), z: Float(vertex.z)))
+                        
+                        if vertex.x > maxX {
+                            maxX = vertex.x
+                        }
+                        
+                        if vertex.x < minX {
+                            minX = vertex.x
+                        }
+                        
+                        if vertex.y > maxY {
+                            maxY = vertex.y
+                        }
+                        
+                        if vertex.y < minY {
+                            minY = vertex.y
+                        }
+                        
+                        if vertex.z > maxZ {
+                            maxZ = vertex.z
+                        }
+                        
+                        if vertex.z < minZ {
+                            minZ = vertex.z
+                        }
                     }
                 } else if separateValues.first == "f" {
                     for i in 1...3 {
@@ -117,6 +148,13 @@ public class ModelLoader {
                     }
                 }
             }
+            
+            print("maxX = \(maxX)")
+            print("minX = \(minX)")
+            print("maxY = \(maxY)")
+            print("minY = \(minY)")
+            print("maxZ = \(maxZ)")
+            print("minZ = \(minZ)")
             
             orderNormals(rawNormals: rawNormals, rawNormalIndices: rawNormalIndices)
         } catch {

@@ -11,6 +11,7 @@ import RuntimeError
 import MetalCamera
 import CoreMotion
 import UploadModel
+import Constants
 
 enum ArrowColor {
     case red
@@ -20,7 +21,6 @@ enum ArrowColor {
 class ArrowModel: UploadModel {
     let name = "direction_arrow"
     let camera: MetalCamera
-    let xOffset: Float
     
     var pipelineState: MTLRenderPipelineState!
     
@@ -53,19 +53,17 @@ class ArrowModel: UploadModel {
          camera: MetalCamera,
          colorPixelFormat: MTLPixelFormat,
          scale: Float = 1,
-         xOffset: Float,
          arrowColor: ArrowColor,
          drawNormals: Bool = false) async throws {
         
         self.camera = camera
-        self.xOffset = xOffset
         self.drawNormals = drawNormals
         
         let rotateX = float4x4(rotationX: Float(90).degreesToRadians)
         let rotateZ = float4x4(rotationZ: Float(90).degreesToRadians)
         let rotate = float4x4(rotationZ: Float(180).degreesToRadians) * rotateZ * rotateX
         
-        try await super.init(device: device, modelName: name, scale: scale, preTransformations: rotate)
+        try await super.init(device: device, modelName: name, scale: scale)
         
         if drawNormals {
             pipelineState = try await normalsPipelineState(device: device, colorPixelFormat: colorPixelFormat)
@@ -187,7 +185,7 @@ class ArrowModel: UploadModel {
                                       offset: 0,
                                       index: 1)
         
-        var model = float4x4(translation: .init(0, 0, 0.5)) * rotationMatrix * float4x4(translation: .init(x: xOffset, y: 0, z: 0)) * float4x4(rotationZ: Float(180).degreesToRadians)
+        var model = float4x4(translation: .init(x: 0, y: 0, z: 3 * Constants.unitValue)) * float4x4(scaling: Constants.unitValue)
         
         if drawNormals {
             var projMatrix = camera.projMatrix
