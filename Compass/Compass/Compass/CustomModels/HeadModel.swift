@@ -10,7 +10,6 @@ import MathLibrary
 import ModelLoader
 import RuntimeError
 import MetalCamera
-import Model
 
 class HeadModel: UploadModel {
     

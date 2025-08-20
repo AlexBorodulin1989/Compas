@@ -1,12 +1,12 @@
 import MetalKit
 import MetalCamera
-import Model
+import GeneralModel
 
 // swiftlint:disable implicitly_unwrapped_optional
 
 @MainActor
 public class Renderer: NSObject {
-    let models: [Model]
+    let models: [GeneralModel]
     let commandQueue: MTLCommandQueue!
     private var depthState: MTLDepthStencilState!
     
@@ -14,7 +14,7 @@ public class Renderer: NSObject {
     
     var rotation: Float = 0
     
-    public init(metalView: MTKView, device: MTLDevice, models: [Model], camera: MetalCamera) {
+    public init(metalView: MTKView, device: MTLDevice, models: [GeneralModel], camera: MetalCamera) {
         self.models = models
         self.camera = camera
         

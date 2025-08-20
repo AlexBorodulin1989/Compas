@@ -4,13 +4,13 @@
 //
 //  Created by Aleksandr Borodulin on 14.08.2025.
 //
-import Model
+import GeneralModel
 import MetalKit
 import MathLibrary
 import MetalCamera
 import Constants
 
-class DebugCube: Model {
+class DebugCube: GeneralModel {
     
     let camera: MetalCamera
     

@@ -6,11 +6,11 @@
 //
 
 import MetalKit
-import Model
+import GeneralModel
 import ModelLoader
 import MathLibrary
 
-class UploadModel: Model {
+class UploadModel: GeneralModel {
     let indicesAmount: Int
     
     var depthStencilState: MTLDepthStencilState!

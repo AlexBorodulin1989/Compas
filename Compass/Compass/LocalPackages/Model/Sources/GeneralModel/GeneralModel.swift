@@ -10,7 +10,7 @@ import RuntimeError
 import MathLibrary
 import simd
 
-public protocol Model: AnyObject {
+public protocol GeneralModel: AnyObject {
     var depthStencilState: MTLDepthStencilState! { get set }
     
     var vertexBuffer: MTLBuffer! { get set }
@@ -22,7 +22,7 @@ public protocol Model: AnyObject {
     func draw(renderEncoder: MTLRenderCommandEncoder)
 }
 
-public extension Model {
+public extension GeneralModel {
     func setupDepthStencil(device: MTLDevice) {
         // Create a depth stencil descriptor
         let depthStencilDescriptor = MTLDepthStencilDescriptor()
@@ -33,7 +33,7 @@ public extension Model {
     }
 }
 
-public extension Model {
+public extension GeneralModel {
     func setupBuffers(device: MTLDevice,
                       vertices: inout [float3],
                       normals: inout [float3],

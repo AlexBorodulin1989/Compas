@@ -10,7 +10,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Model",
-            targets: ["Model"]),
+            targets: ["GeneralModel"]),
     ],
     dependencies: [
         .package(path: "../ModelLoader"),
@@ -20,7 +20,7 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Model",
+            name: "GeneralModel",
             dependencies: [
                 .product(name: "ModelLoader", package: "ModelLoader"),
                 .product(name: "RuntimeError", package: "RuntimeError")
