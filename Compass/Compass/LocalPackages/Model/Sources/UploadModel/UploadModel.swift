@@ -10,21 +10,21 @@ import GeneralModel
 import ModelLoader
 import MathLibrary
 
-class UploadModel: GeneralModel {
-    let indicesAmount: Int
+public class UploadModel: GeneralModel {
+    public let indicesAmount: Int
     
-    var depthStencilState: MTLDepthStencilState!
+    public var depthStencilState: MTLDepthStencilState!
     
-    var vertexBuffer: MTLBuffer!
-    var normalsBuffer: MTLBuffer!
-    var indexBuffer: MTLBuffer!
+    public var vertexBuffer: MTLBuffer!
+    public var normalsBuffer: MTLBuffer!
+    public var indexBuffer: MTLBuffer!
     
     static private let defaultModelExtension = "obj"
     
-    required init(device: MTLDevice,
-                  modelName: String,
-                  scale: Float = 1,
-                  preTransformations: float4x4 = .identity) async throws {
+    public required init(device: MTLDevice,
+                         modelName: String,
+                         scale: Float = 1,
+                         preTransformations: float4x4 = .identity) async throws {
         
         let modelLoader = await Self.loadModel(device: device,
                                                modelName: modelName,
@@ -41,7 +41,7 @@ class UploadModel: GeneralModel {
         try await setupBuffers(device: device, vertices: &vertices, normals: &normals, indices: &indices)
     }
     
-    func draw(renderEncoder: any MTLRenderCommandEncoder) {}
+    open func draw(renderEncoder: any MTLRenderCommandEncoder) {}
 }
 
 extension UploadModel {

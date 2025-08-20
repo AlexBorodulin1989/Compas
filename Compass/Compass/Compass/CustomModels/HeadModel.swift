@@ -6,6 +6,7 @@
 //
 
 import MetalKit
+import UploadModel
 import MathLibrary
 import ModelLoader
 import RuntimeError

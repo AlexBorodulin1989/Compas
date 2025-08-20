@@ -10,6 +10,7 @@ import ModelLoader
 import RuntimeError
 import MetalCamera
 import CoreMotion
+import UploadModel
 
 enum ArrowColor {
     case red
