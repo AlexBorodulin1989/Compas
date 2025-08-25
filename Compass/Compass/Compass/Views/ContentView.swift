@@ -30,46 +30,46 @@ struct ContentView: View {
                                             camera: camera,
                                             colorPixelFormat: mtkView.colorPixelFormat)
             
-//            let headModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
-//                                                 camera: camera,
-//                                                 colorPixelFormat: mtkView.colorPixelFormat,
-//                                                 scale: 1.0)
-//            
-//            let headNormalModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
-//                                                       camera: camera,
-//                                                       colorPixelFormat: mtkView.colorPixelFormat,
-//                                                       scale: 1.0,
-//                                                       drawNormals: true)
-//            
-//            if let headModel, let headNormalModel, let cube {
-//                renderer = Renderer(metalView: mtkView,
-//                                    device: GPUDevice.instance.mtlDevice,
-//                                    models: [cube, headModel, headNormalModel],
-//                                    camera: camera)
-//            }
+            let headModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
+                                                 camera: camera,
+                                                 colorPixelFormat: mtkView.colorPixelFormat,
+                                                 scale: 1.0)
             
-            let blueArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+            let headNormalModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
                                                        camera: camera,
                                                        colorPixelFormat: mtkView.colorPixelFormat,
-                                                       arrowColor: .blue)
+                                                       scale: 1.0,
+                                                       drawNormals: true)
             
-            let blueArrowNormalsModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-                                                              camera: camera,
-                                                              colorPixelFormat: mtkView.colorPixelFormat,
-                                                              arrowColor: .blue,
-                                                              drawNormals: true)
-            
-            let redArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
-                                                      camera: camera,
-                                                      colorPixelFormat: mtkView.colorPixelFormat,
-                                                      arrowColor: .red)
-            
-            if let blueArrowModel, let blueArrowNormalsModel, let redArrowModel, let cube {
+            if let headModel, let headNormalModel, let cube {
                 renderer = Renderer(metalView: mtkView,
                                     device: GPUDevice.instance.mtlDevice,
-                                    models: [blueArrowModel, cube],
+                                    models: [cube, headModel, headNormalModel],
                                     camera: camera)
             }
+            
+//            let blueArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+//                                                       camera: camera,
+//                                                       colorPixelFormat: mtkView.colorPixelFormat,
+//                                                       arrowColor: .blue)
+//            
+//            let blueArrowNormalsModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+//                                                              camera: camera,
+//                                                              colorPixelFormat: mtkView.colorPixelFormat,
+//                                                              arrowColor: .blue,
+//                                                              drawNormals: true)
+//            
+//            let redArrowModel = try? await ArrowModel(device: GPUDevice.instance.mtlDevice,
+//                                                      camera: camera,
+//                                                      colorPixelFormat: mtkView.colorPixelFormat,
+//                                                      arrowColor: .red)
+//            
+//            if let blueArrowModel, let blueArrowNormalsModel, let redArrowModel, let cube {
+//                renderer = Renderer(metalView: mtkView,
+//                                    device: GPUDevice.instance.mtlDevice,
+//                                    models: [blueArrowModel, cube],
+//                                    camera: camera)
+//            }
         }
     }
 }

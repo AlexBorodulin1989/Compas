@@ -18,11 +18,6 @@ public class Renderer: NSObject {
         self.models = models
         self.camera = camera
         
-        let width = metalView.bounds.size.width > 1 ? metalView.bounds.size.width : 1
-        let aspectRatio = metalView.bounds.size.height / width
-        
-        camera.setAspectRatio(Float(aspectRatio))
-        
         guard let commandQueue = device.makeCommandQueue()
         else {
             fatalError("Cannot create command queue")
@@ -49,6 +44,8 @@ public class Renderer: NSObject {
         metalView.depthStencilPixelFormat = .depth32Float
         
         metalView.isOpaque = false
+        
+        mtkView(metalView, drawableSizeWillChange: metalView.bounds.size)
     }
 }
 
