@@ -111,7 +111,7 @@ extension DebugCube {
                                       offset: 0,
                                       index: 0)
         
-        let model = float4x4(translation: .init(x: 0, y: 0, z: 3 * Constants.unitValue)) * float4x4(scaling: Constants.unitValue)
+        let model = transform.modelMatrix
         var transformMatrix = camera.projMatrix * model
         
         renderEncoder.setVertexBytes(&transformMatrix,

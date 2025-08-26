@@ -34,19 +34,26 @@ import MathLibrary
 import simd
 
 public struct Transform {
-    var position: float3 = [0, 0, 0]
-    var rotation: float3 = [0, 0, 0]
-    var scale: Float = 1
+    public var position: float3 = [0, 0, 0]
+    public var rotation: float3 = [0, 0, 0]
+    public var scale: float3 = .init(repeating: 1)
     
     public init() {}
 }
 
 public extension Transform {
-    var modelMatrix: matrix_float4x4 {
+    var modelMatrix: float4x4 {
         let translation = float4x4(translation: position)
         let rotation = float4x4(rotation: rotation)
         let scale = float4x4(scaling: scale)
         let modelMatrix = translation * rotation * scale
+        return modelMatrix
+    }
+    
+    var normalModelMatrix: float4x4 {
+        let translation = float4x4(translation: position)
+        let rotation = float4x4(rotation: rotation)
+        let modelMatrix = translation * rotation
         return modelMatrix
     }
 }

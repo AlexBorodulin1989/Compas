@@ -12,6 +12,8 @@ import MetalKit
 import Renderer
 import MetalView
 import GPUDevice
+import Constants
+import Transform
 
 struct ContentView: View {
     @State private var mtkView = MTKView()
@@ -26,25 +28,33 @@ struct ContentView: View {
             MetalView(mtkView: $mtkView, renderer: $renderer)
         }
         .task {
+            
+            var transform = Transform()
+            transform.position.z = 3 * Constants.unitValue
+            transform.scale = .init(repeating: Constants.unitValue)
+            
             let cube = try? await DebugCube(device: GPUDevice.instance.mtlDevice,
                                             camera: camera,
                                             colorPixelFormat: mtkView.colorPixelFormat)
+            cube?.transform = transform
             
             let headModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
                                                  camera: camera,
                                                  colorPixelFormat: mtkView.colorPixelFormat,
                                                  scale: 1.0)
+            headModel?.transform = transform
             
             let headNormalModel = try? await HeadModel(device: GPUDevice.instance.mtlDevice,
                                                        camera: camera,
                                                        colorPixelFormat: mtkView.colorPixelFormat,
                                                        scale: 1.0,
                                                        drawNormals: true)
+            headNormalModel?.transform = transform
             
             if let headModel, let headNormalModel, let cube {
                 renderer = Renderer(metalView: mtkView,
                                     device: GPUDevice.instance.mtlDevice,
-                                    models: [cube, headModel, headNormalModel],
+                                    models: [cube, headModel],
                                     camera: camera)
             }
             

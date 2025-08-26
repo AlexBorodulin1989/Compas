@@ -45,7 +45,7 @@ public extension Transformable {
         get { transform.rotation }
         set { transform.rotation = newValue }
     }
-    var scale: Float {
+    var scale: float3 {
         get { transform.scale }
         set { transform.scale = newValue }
     }

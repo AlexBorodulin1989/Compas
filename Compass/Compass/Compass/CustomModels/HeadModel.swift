@@ -11,7 +11,6 @@ import MathLibrary
 import ModelLoader
 import RuntimeError
 import MetalCamera
-import Constants
 
 class HeadModel: UploadModel {
     
@@ -121,7 +120,8 @@ class HeadModel: UploadModel {
                                       offset: 0,
                                       index: 1)
         
-        var model = float4x4(translation: .init(x: 0, y: 0, z: 3 * Constants.unitValue)) * float4x4(scaling: Constants.unitValue)
+        var modelMatrix = transform.modelMatrix
+        let normalModelMatrix = transform.normalModelMatrix
         
         if drawNormals {
             var projMatrix = camera.projMatrix
@@ -130,11 +130,11 @@ class HeadModel: UploadModel {
                                          length: MemoryLayout<float4x4>.stride,
                                          index: 10)
             
-            renderEncoder.setVertexBytes(&model,
+            renderEncoder.setVertexBytes(&modelMatrix,
                                          length: MemoryLayout<float4x4>.stride,
                                          index: 11)
             
-            var normMatrix = float3x3(normalFrom4x4: model)
+            var normMatrix = float3x3(normalFrom4x4: normalModelMatrix)
             
             renderEncoder.setVertexBytes(&normMatrix,
                                          length: MemoryLayout<float4x4>.stride,
@@ -148,13 +148,13 @@ class HeadModel: UploadModel {
                                          vertexStart: 0,
                                          vertexCount: indicesAmount * 2)
         } else {
-            var transformMatrix = camera.projMatrix * model
+            var transformMatrix = camera.projMatrix * modelMatrix
             
             renderEncoder.setVertexBytes(&transformMatrix,
                                          length: MemoryLayout<float4x4>.stride,
                                          index: 10)
             
-            var normMatrix = float3x3(normalFrom4x4: model)
+            var normMatrix = float3x3(normalFrom4x4: normalModelMatrix)
             
             renderEncoder.setVertexBytes(&normMatrix,
                                          length: MemoryLayout<float3x3>.stride,
