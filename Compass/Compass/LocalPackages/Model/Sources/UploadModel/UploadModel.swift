@@ -9,8 +9,11 @@ import MetalKit
 import GeneralModel
 import ModelLoader
 import MathLibrary
+import Transform
 
 open class UploadModel: GeneralModel {
+    public var transform: Transform = .init()
+    
     public let indicesAmount: Int
     
     public var depthStencilState: MTLDepthStencilState!

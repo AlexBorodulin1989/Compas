@@ -9,8 +9,9 @@ import Metal
 import RuntimeError
 import MathLibrary
 import simd
+import Transform
 
-public protocol GeneralModel: AnyObject {
+public protocol GeneralModel: AnyObject, Transformable {
     var depthStencilState: MTLDepthStencilState! { get set }
     
     var vertexBuffer: MTLBuffer! { get set }

@@ -9,8 +9,10 @@ import MetalKit
 import MathLibrary
 import MetalCamera
 import Constants
+import Transform
 
 class DebugCube: GeneralModel {
+    var transform: Transform = .init()
     
     let camera: MetalCamera
     
