@@ -107,7 +107,7 @@ class HeadModel: UploadModel {
     override func draw(renderEncoder: any MTLRenderCommandEncoder) {
         renderEncoder.setRenderPipelineState(pipelineState)
         
-        time += 0.001
+        time += 0.01
 
         // Set the depth stencil state on the render command encoder
         renderEncoder.setDepthStencilState(depthStencilState)
@@ -119,6 +119,8 @@ class HeadModel: UploadModel {
         renderEncoder.setVertexBuffer(normalsBuffer,
                                       offset: 0,
                                       index: 1)
+        
+        transform.rotation.y = time
         
         var modelMatrix = transform.modelMatrix
         let normalModelMatrix = transform.normalModelMatrix

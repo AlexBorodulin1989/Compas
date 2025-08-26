@@ -52,6 +52,8 @@ class DebugCube: GeneralModel {
         3, 7
     ]
     
+    private var time: Float = 0
+    
     init(device: MTLDevice,
          camera: MetalCamera,
          colorPixelFormat: MTLPixelFormat) async throws {
@@ -103,6 +105,9 @@ extension DebugCube {
 
 extension DebugCube {
     func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        
+        time += 0.01
+        
         renderEncoder.setDepthStencilState(depthStencilState)
         
         renderEncoder.setRenderPipelineState(pipelineState)
@@ -110,6 +115,8 @@ extension DebugCube {
         renderEncoder.setVertexBuffer(vertexBuffer,
                                       offset: 0,
                                       index: 0)
+        
+        transform.rotation.y = time
         
         let model = transform.modelMatrix
         var transformMatrix = camera.projMatrix * model

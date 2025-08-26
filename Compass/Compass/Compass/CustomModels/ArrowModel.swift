@@ -32,6 +32,8 @@ class ArrowModel: UploadModel {
     
     private var rotationMatrix = float4x4.identity
     
+    private var time: Float = 0
+    
     static var vertexDescriptor: MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float3
@@ -172,6 +174,7 @@ class ArrowModel: UploadModel {
     }
     
     override func draw(renderEncoder: any MTLRenderCommandEncoder) {
+        time += 0.01
         // Set the depth stencil state on the render command encoder
         renderEncoder.setDepthStencilState(depthStencilState)
         
@@ -184,6 +187,8 @@ class ArrowModel: UploadModel {
         renderEncoder.setVertexBuffer(normalsBuffer,
                                       offset: 0,
                                       index: 1)
+        
+        transform.rotation.y = time
         
         var modelMatrix = transform.modelMatrix
         let normalModelMatrix = transform.normalModelMatrix
